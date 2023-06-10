@@ -1,3 +1,9 @@
+<script lang="ts" setup>
+import { useAuthStore } from '@/stores/auth'
+
+const store = useAuthStore()
+
+</script>
 <template>
     <nav class="navbar navbar-light">
         <div class="container">
@@ -7,16 +13,16 @@
                     <!-- Add "active" class when you're on that page" -->
                     <a class="nav-link active" href="">Home</a>
                 </li>
-                <li class="nav-item">
+                <li v-if="store.isLoggedIn" class="nav-item">
                     <a class="nav-link" href=""> <i class="ion-compose"></i>&nbsp;New Article </a>
                 </li>
-                <li class="nav-item">
+                <li v-if="store.isLoggedIn" class="nav-item">
                     <a class="nav-link" href=""> <i class="ion-gear-a"></i>&nbsp;Settings </a>
                 </li>
-                <li class="nav-item">
+                <li v-if="!store.isLoggedIn" class="nav-item">
                     <a class="nav-link" href="">Sign in</a>
                 </li>
-                <li class="nav-item">
+                <li v-if="!store.isLoggedIn" class="nav-item">
                     <a class="nav-link" href="">Sign up</a>
                 </li>
             </ul>
