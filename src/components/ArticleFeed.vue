@@ -1,10 +1,13 @@
 <script lang="ts" setup>
+import { useAuthStore } from '@/stores/auth'
+
+const store = useAuthStore()
 </script>
 <template>
     <div class="col-md-9">
         <div class="feed-toggle">
             <ul class="nav nav-pills outline-active">
-                <li class="nav-item">
+                <li v-if="store.isLoggedIn" class="nav-item">
                     <a class="nav-link disabled" href="">Your Feed</a>
                 </li>
                 <li class="nav-item">
