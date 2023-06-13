@@ -12,7 +12,12 @@ export function setServiceURL(url: string) {
 
 export function getErrors(e: any): string[] {
     if (axios.isAxiosError(e) && e.response) {
-        return e.response.data.errors.body
+        const msg: string[] = []        
+
+        Object.keys(e.response.data.errors).forEach(
+            (k) => msg.push(k + ' : ' + e.response?.data.errors[k].join('' )) 
+        ) 
+        return msg
     }
     return []
 }
