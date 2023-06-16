@@ -62,7 +62,7 @@ export function useComment(): UseCommentReturnType {
                 },
                 {
                     headers: {
-                        'Authorization': token
+                        'Authorization': 'Token ' + token
                     }
                 }
             )
@@ -80,7 +80,7 @@ export function useComment(): UseCommentReturnType {
                 serviceURL + '/articles/' + slug + '/comments/' + id,
                 {
                     headers: {
-                        'Authorization': token
+                        'Authorization': 'Token ' + token
                     }
                 }
             )

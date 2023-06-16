@@ -113,7 +113,7 @@ export function useUser(): UseUserReturnType {
         try {
             const response = await axios.get(serviceURL + '/user', {
                 headers: {
-                    'Authorization': token,
+                    'Authorization': 'Token ' + token
                 }
             })
             currentUser.value = response.data.user
@@ -127,7 +127,7 @@ export function useUser(): UseUserReturnType {
         try {
             const response = await axios.put(serviceURL + '/user', { user: user }, {
                 headers: {
-                    'Authorization': token,
+                    'Authorization': 'Token ' + token
                 }
             })
             currentUser.value = response.data.user

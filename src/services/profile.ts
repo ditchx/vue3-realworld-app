@@ -54,7 +54,7 @@ export function useProfile(): UseProfileReturnType {
                 serviceURL + '/profiles/' + username,
                 {
                     headers: {
-                        'Authorization': token
+                        'Authorization': 'Token ' + token
                     }
                 }
             )
@@ -71,7 +71,7 @@ export function useProfile(): UseProfileReturnType {
                 serviceURL + '/profiles/' + username,
                 {
                     headers: {
-                        'Authorization': token
+                        'Authorization': 'Token ' + token
                     }
                 }
             )

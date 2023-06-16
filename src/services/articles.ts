@@ -58,7 +58,7 @@ export function emptyArticle(): Article {
         favorited: false,
         favoritesCount: 0,
         author: emptyProfile()
-   
+
     }
 }
 
@@ -74,7 +74,7 @@ export function useArticle(): UseArticleReturnType {
                 serviceURL + '/articles/feed',
                 {
                     headers: {
-                        'Authorization': token
+                        'Authorization': 'Token ' + token
                     }
                 }
             )
@@ -107,7 +107,7 @@ export function useArticle(): UseArticleReturnType {
                 },
                 {
                     headers: {
-                        'Authorization': token
+                        'Authorization': 'Token ' + token
                     }
                 }
             )
@@ -140,7 +140,7 @@ export function useArticle(): UseArticleReturnType {
                 },
                 {
                     headers: {
-                        'Authorization': token
+                        'Authorization': 'Token ' + token
                     }
                 }
             )
@@ -158,7 +158,7 @@ export function useArticle(): UseArticleReturnType {
                 serviceURL + '/articles/' + slug,
                 {
                     headers: {
-                        'Authorization': token
+                        'Authorization': 'Token ' + token
                     }
                 }
             )
@@ -177,7 +177,7 @@ export function useArticle(): UseArticleReturnType {
                 serviceURL + '/articles/' + slug + '/favorite',
                 {
                     headers: {
-                        'Authorization': token
+                        'Authorization': 'Token ' + token
                     }
                 }
             )
@@ -194,7 +194,7 @@ export function useArticle(): UseArticleReturnType {
                 serviceURL + '/articles/' + slug + '/favorite',
                 {
                     headers: {
-                        'Authorization': token
+                        'Authorization': 'Token ' + token
                     }
                 }
             )
