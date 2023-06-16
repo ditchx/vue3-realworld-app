@@ -1,55 +1,51 @@
 <script lang="ts" setup>
+import useArticle from '@/services/articles'
 import { useAuthStore } from '@/stores/auth'
+import { onMounted, watch, ref } from 'vue'
+import ArticlePreview from "@/components/ArticlePreview.vue"
 
 const store = useAuthStore()
+const isFeed = ref(false)
+const {articleList, isLoading, getFeed, listArticles } = useArticle()
+
+function setFeed(feed: boolean) {
+    isFeed.value = feed
+}
+
+onMounted(() => {
+
+    watch(isFeed, (val) => {
+        if (val) {
+            getFeed(store.user.token)
+        } else {
+            listArticles()
+        }
+    })
+
+    if (store.isLoggedIn) {
+        isFeed.value = true
+    }
+})
+
 </script>
 <template>
     <div class="col-md-9">
         <div class="feed-toggle">
             <ul class="nav nav-pills outline-active">
                 <li v-if="store.isLoggedIn" class="nav-item">
-                    <a class="nav-link disabled" href="">Your Feed</a>
+                    <a @click.prevent="setFeed(true)" class="nav-link" :class="{active: isFeed}" href="">Your Feed</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="">Global Feed</a>
+                    <a @click.prevent="setFeed(false)" class="nav-link" :class="{active: !isFeed}" href="">Global Feed</a>
                 </li>
             </ul>
         </div>
 
-        <div class="article-preview">
-            <div class="article-meta">
-                <a href="profile.html"><img src="http://i.imgur.com/Qr71crq.jpg" /></a>
-                <div class="info">
-                    <a href="" class="author">Eric Simons</a>
-                    <span class="date">January 20th</span>
-                </div>
-                <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                    <i class="ion-heart"></i> 29
-                </button>
-            </div>
-            <a href="" class="preview-link">
-                <h1>How to build webapps that scale</h1>
-                <p>This is the description for the post.</p>
-                <span>Read more...</span>
-            </a>
+        <div v-if="isLoading" class="article-preview">
+            Loading articles ...
         </div>
 
-        <div class="article-preview">
-            <div class="article-meta">
-                <a href="profile.html"><img src="http://i.imgur.com/N4VcUeJ.jpg" /></a>
-                <div class="info">
-                    <a href="" class="author">Albert Pai</a>
-                    <span class="date">January 20th</span>
-                </div>
-                <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                    <i class="ion-heart"></i> 32
-                </button>
-            </div>
-            <a href="" class="preview-link">
-                <h1>The song you won't ever stop singing. No matter how hard you try.</h1>
-                <p>This is the description for the post.</p>
-                <span>Read more...</span>
-            </a>
-        </div>
+        <ArticlePreview v-for="article in articleList" :article="article" :key="article.slug" />
+
     </div>
 </template>
