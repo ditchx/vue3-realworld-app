@@ -34,6 +34,7 @@ export interface UpdateArticle {
 
 export interface UseArticleReturnType {
     lastError: Ref<string[]>
+    isLoading: Ref<boolean>
     article: Ref<Article>
     articleList: Ref<Article[]>
     getFeed: ((token: string) => void)
@@ -64,11 +65,13 @@ export function emptyArticle(): Article {
 
 export function useArticle(): UseArticleReturnType {
     const lastError = ref<string[]>([])
+    const isLoading = ref(false)
     const article = ref<Article>(emptyArticle())
     const articleList = ref<Article[]>([])
 
     async function getFeed(token: string) {
         lastError.value = []
+        isLoading.value = true
         try {
             const response = await axios.get(
                 serviceURL + '/articles/feed',
@@ -84,10 +87,12 @@ export function useArticle(): UseArticleReturnType {
             articleList.value = []
             lastError.value = getErrors(error)
         }
+        isLoading.value = false
     }
 
     async function listArticles() {
         lastError.value = []
+        isLoading.value = true
         try {
             const response = await axios.get(serviceURL + '/articles')
             articleList.value = response.data.articles
@@ -95,10 +100,12 @@ export function useArticle(): UseArticleReturnType {
             articleList.value = []
             lastError.value = getErrors(error)
         }
+        isLoading.value = false
     }
 
     async function addArticle(newArticle: NewArticle, token: string) {
         lastError.value = []
+        isLoading.value = true
         try {
             const response = await axios.post(
                 serviceURL + '/articles',
@@ -116,10 +123,12 @@ export function useArticle(): UseArticleReturnType {
             article.value = emptyArticle()
             lastError.value = getErrors(error)
         }
+        isLoading.value = false
     }
 
     async function getArticle(slug: string) {
         lastError.value = []
+        isLoading.value = true
         try {
             const response = await axios.get(serviceURL + '/articles/' + slug)
             articleList.value = response.data.article
@@ -127,11 +136,13 @@ export function useArticle(): UseArticleReturnType {
             article.value = emptyArticle()
             lastError.value = getErrors(error)
         }
+        isLoading.value = false
     }
 
 
     async function updateArticle(modArticle: UpdateArticle, slug: string, token: string) {
         lastError.value = []
+        isLoading.value = true
         try {
             const response = await axios.put(
                 serviceURL + '/articles',
@@ -149,10 +160,12 @@ export function useArticle(): UseArticleReturnType {
             article.value = emptyArticle()
             lastError.value = getErrors(error)
         }
+        isLoading.value = false
     }
 
     async function deleteArticle(slug: string, token: string) {
         lastError.value = []
+        isLoading.value = true
         try {
             const response = await axios.delete(
                 serviceURL + '/articles/' + slug,
@@ -167,11 +180,13 @@ export function useArticle(): UseArticleReturnType {
             article.value = emptyArticle()
             lastError.value = getErrors(error)
         }
+        isLoading.value = false
     }
 
 
     async function addFavorite(slug: string, token: string) {
         lastError.value = []
+        isLoading.value = true
         try {
             const response = await axios.post(
                 serviceURL + '/articles/' + slug + '/favorite',
@@ -185,10 +200,12 @@ export function useArticle(): UseArticleReturnType {
         } catch (error) {
             lastError.value = getErrors(error)
         }
+        isLoading.value = false
     }
 
     async function removeFavorite(slug: string, token: string) {
         lastError.value = []
+        isLoading.value = true
         try {
             const response = await axios.delete(
                 serviceURL + '/articles/' + slug + '/favorite',
@@ -202,10 +219,12 @@ export function useArticle(): UseArticleReturnType {
         } catch (error) {
             lastError.value = getErrors(error)
         }
+        isLoading.value = false
     }
 
     return {
         lastError,
+        isLoading,
         article,
         articleList,
         getFeed,
