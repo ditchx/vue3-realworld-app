@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { useAuthStore } from '@/stores/auth'
-
+import { RouterLink, useRoute } from 'vue-router';
 const store = useAuthStore()
+const route = useRoute()
 
 </script>
 <template>
@@ -11,7 +12,7 @@ const store = useAuthStore()
             <ul class="nav navbar-nav pull-xs-right">
                 <li class="nav-item">
                     <!-- Add "active" class when you're on that page" -->
-                    <a class="nav-link active" href="">Home</a>
+                    <router-link :to="{name: 'home'}" :class="{active: route.name == 'home'}" class="nav-link" >Home</router-link>
                 </li>
                 <li v-if="store.isLoggedIn" class="nav-item">
                     <a class="nav-link" href=""> <i class="ion-compose"></i>&nbsp;New Article </a>
