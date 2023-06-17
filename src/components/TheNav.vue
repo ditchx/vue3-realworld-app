@@ -21,10 +21,10 @@ const route = useRoute()
                     <router-link :to="{name: 'settings'}" class="nav-link" :class="{active: route.name == 'settings'}"> <i class="ion-gear-a"></i>&nbsp;Settings </router-link>
                 </li>
                 <li v-if="!store.isLoggedIn" class="nav-item">
-                    <a class="nav-link" href="">Sign in</a>
+                    <router-link :to="{name: 'login'}" class="nav-link" :class="{active: route.name == 'login'}">Sign in</router-link>
                 </li>
                 <li v-if="!store.isLoggedIn" class="nav-item">
-                    <a class="nav-link" href="">Sign up</a>
+                    <router-link :to="{name: 'register'}" class="nav-link" :class="{active: route.name == 'register'}">Sign up</router-link>
                 </li>
             </ul>
         </div>
