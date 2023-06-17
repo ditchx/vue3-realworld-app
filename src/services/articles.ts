@@ -5,6 +5,19 @@ import { emptyProfile, type Profile } from './profile'
 
 const serviceURL = getServiceURL()
 
+export type Pagination = {
+  offset?: number | null
+  limit?: number | null
+}
+
+export type ArticleFilters = {
+  tag?: string | null
+  author?: string | null
+  favorited?: string | null
+}
+
+export type ArticleParams = ArticleFilters & Pagination
+
 export interface Article {
   slug: string
   title: string
@@ -37,7 +50,7 @@ export interface UseArticleReturnType {
   article: Ref<Article>
   articleList: Ref<Article[]>
   getFeed: (token: string) => void
-  listArticles: () => void
+  listArticles: (params?: ArticleParams) => void
   addArticle: (newArticle: NewArticle, token: string) => void
   getArticle: (slug: string) => void
   updateArticle: (modArticle: UpdateArticle, slug: string, token: string) => void
@@ -84,11 +97,20 @@ export function useArticle(): UseArticleReturnType {
     isLoading.value = false
   }
 
-  async function listArticles() {
+  async function listArticles(
+    {
+      tag = null,
+      author = null,
+      favorited = null,
+      limit = null,
+      offset = null
+    }: ArticleParams = {}
+  ) {
     lastError.value = []
     isLoading.value = true
     try {
-      const response = await axios.get(serviceURL + '/articles')
+      const params = { tag, author, favorited, limit, offset }
+      const response = await axios.get(serviceURL + '/articles', { params: params })
       articleList.value = response.data.articles
     } catch (error) {
       articleList.value = []
