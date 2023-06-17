@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import TagList from '@/components/TagList.vue';
-import ArticleFeed from '@/components/ArticleFeed.vue';
+import TagList from '@/components/TagList.vue'
+import ArticleFeed from '@/components/ArticleFeed.vue'
 </script>
 
 <template>
@@ -20,7 +20,6 @@ import ArticleFeed from '@/components/ArticleFeed.vue';
             <TagList />
           </div>
         </div>
-
       </div>
     </div>
   </div>

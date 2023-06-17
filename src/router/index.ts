@@ -35,20 +35,16 @@ const router = createRouter({
       name: 'profile',
       component: () => import('../views/ProfileView.vue')
     }
-
   ]
 })
 
 router.beforeEach((to, from) => {
   const store = useAuthStore()
   const guestPaths = ['login', 'register']
-  
-  if (store.isLoggedIn && guestPaths.includes(<string>to.name) ) {
+
+  if (store.isLoggedIn && guestPaths.includes(<string>to.name)) {
     return '/'
   }
-
 })
-
-
 
 export default router

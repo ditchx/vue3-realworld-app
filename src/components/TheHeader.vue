@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import TheNav from './TheNav.vue';
-
+import TheNav from './TheNav.vue'
 </script>
 <template>
-    <TheNav />
+  <TheNav />
 </template>
