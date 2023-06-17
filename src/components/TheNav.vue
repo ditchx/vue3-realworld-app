@@ -20,6 +20,9 @@ const route = useRoute()
                 <li v-if="store.isLoggedIn" class="nav-item">
                     <router-link :to="{name: 'settings'}" class="nav-link" :class="{active: route.name == 'settings'}"> <i class="ion-gear-a"></i>&nbsp;Settings </router-link>
                 </li>
+                <li v-if="store.isLoggedIn" class="nav-item">
+                    <router-link :to="{name: 'profile', params: {username: store.user.username}}" class="nav-link" :class="{active: route.name == 'profile'}"> <img :src="store.user.image" class="user-pic" />&nbsp;{{ store.user.username }} </router-link>
+                </li>
                 <li v-if="!store.isLoggedIn" class="nav-item">
                     <router-link :to="{name: 'login'}" class="nav-link" :class="{active: route.name == 'login'}">Sign in</router-link>
                 </li>
