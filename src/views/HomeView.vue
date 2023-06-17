@@ -1,6 +1,18 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import TagList from '@/components/TagList.vue'
 import ArticleFeed from '@/components/ArticleFeed.vue'
+
+const tag = ref('')
+
+function emptyTag() {
+  tag.value = '';
+}
+
+function setTag(targetTag: string) {
+  tag.value = targetTag;
+}
+
 </script>
 
 <template>
@@ -13,11 +25,11 @@ import ArticleFeed from '@/components/ArticleFeed.vue'
     </div>
     <div class="container page">
       <div class="row">
-        <ArticleFeed />
+        <ArticleFeed @feed-changed="emptyTag" :tag="tag" />
         <div class="col-md-3">
           <div class="sidebar">
             <p>Popular Tags</p>
-            <TagList />
+            <TagList @tag-selected="setTag" />
           </div>
         </div>
       </div>
