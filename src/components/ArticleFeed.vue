@@ -44,8 +44,15 @@ onMounted(() => {
         <div v-if="isLoading" class="article-preview">
             Loading articles ...
         </div>
+        <div v-else>
 
-        <ArticlePreview v-for="article in articleList" :article="article" :key="article.slug" />
+            <div v-if="!articleList.length" class="article-preview">
+                No articles are here... yet.
+            </div>
+
+            <ArticlePreview v-for="article in articleList" :article="article" :key="article.slug" />
+        </div>
+
 
     </div>
 </template>
