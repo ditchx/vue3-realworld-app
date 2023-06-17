@@ -18,7 +18,7 @@ const route = useRoute()
                     <router-link :to="{name: 'create_article'}" class="nav-link" :class="{active: route.name == 'create_article'}" > <i class="ion-compose"></i>&nbsp;New Article </router-link>
                 </li>
                 <li v-if="store.isLoggedIn" class="nav-item">
-                    <a class="nav-link" href=""> <i class="ion-gear-a"></i>&nbsp;Settings </a>
+                    <router-link :to="{name: 'settings'}" class="nav-link" :class="{active: route.name == 'settings'}"> <i class="ion-gear-a"></i>&nbsp;Settings </router-link>
                 </li>
                 <li v-if="!store.isLoggedIn" class="nav-item">
                     <a class="nav-link" href="">Sign in</a>
