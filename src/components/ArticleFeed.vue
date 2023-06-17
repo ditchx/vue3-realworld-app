@@ -4,12 +4,24 @@ import { useAuthStore } from '@/stores/auth'
 import { onMounted, watch, ref } from 'vue'
 import ArticlePreview from '@/components/ArticlePreview.vue'
 
+const props = defineProps<{
+  tag?: string
+}>()
+const emits = defineEmits<{
+  (e: 'feedChanged', feedType: string): void
+}>()
 const store = useAuthStore()
 const isFeed = ref(false)
 const { articleList, isLoading, getFeed, listArticles } = useArticle()
 
 function setFeed(feed: boolean) {
   isFeed.value = feed
+
+  if (feed) {
+    emits('feedChanged', 'user')
+  } else {
+    emits('feedChanged', 'global')
+  }
 }
 
 onMounted(() => {
@@ -19,6 +31,13 @@ onMounted(() => {
     } else {
       listArticles()
     }
+  })
+
+  watch(() => props.tag, (val) => {
+    if (val == '') {
+      return
+    }
+    listArticles({ tag: val })
   })
 
   if (store.isLoggedIn) {
@@ -31,14 +50,13 @@ onMounted(() => {
     <div class="feed-toggle">
       <ul class="nav nav-pills outline-active">
         <li v-if="store.isLoggedIn" class="nav-item">
-          <a @click.prevent="setFeed(true)" class="nav-link" :class="{ active: isFeed }" href=""
-            >Your Feed</a
-          >
+          <a @click.prevent="setFeed(true)" class="nav-link" :class="{ active: isFeed && !tag }" href="">Your Feed</a>
         </li>
         <li class="nav-item">
-          <a @click.prevent="setFeed(false)" class="nav-link" :class="{ active: !isFeed }" href=""
-            >Global Feed</a
-          >
+          <a @click.prevent="setFeed(false)" class="nav-link" :class="{ active: !isFeed && !tag }" href="">Global Feed</a>
+        </li>
+        <li v-if="props.tag" class="nav-item">
+          <a class="nav-link active">#{{ props.tag }}</a>
         </li>
       </ul>
     </div>
