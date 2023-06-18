@@ -38,7 +38,7 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to, from) => {
+router.beforeEach((to) => {
   const store = useAuthStore()
   const guestPaths = ['login', 'register']
   const authPaths = ['settings', 'create_article']

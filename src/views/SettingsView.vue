@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, reactive, ref, watch } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import { useAuthStore } from '@/stores/auth'
 import { useUser, type User, type UpdateUser } from '@/services/users';
 

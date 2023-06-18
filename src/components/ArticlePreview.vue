@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Article } from '@/services/articles'
 import { useDateFormat } from '@vueuse/core'
-const props = defineProps<{
+defineProps<{
   article: Article
 }>()
 </script>
