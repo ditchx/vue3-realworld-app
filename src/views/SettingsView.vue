@@ -2,11 +2,13 @@
 import { reactive, ref, watch } from 'vue';
 import { useAuthStore } from '@/stores/auth'
 import { useUser, type User, type UpdateUser } from '@/services/users';
+import { useRouter } from 'vue-router';
 
 const store = useAuthStore()
 const newPassword = ref("")
 const user = reactive<User>(store.user)
 const disable = ref(false)
+const router = useRouter()
 const { currentUser, updateCurrentUser, lastError } = useUser()
 
 async function doUpdate() {
@@ -43,6 +45,11 @@ async function doUpdate() {
     await updateCurrentUser(data, store.user.token)
 
     disable.value = false
+}
+
+function logout() {
+    store.logout()
+    router.push('/')
 }
 
 </script>
@@ -84,7 +91,7 @@ async function doUpdate() {
 
                     </form>
                     <hr />
-                    <button :disabled="disable" class="btn btn-outline-danger">Or click here to logout.</button>
+                    <button @click.prevent="logout" :disabled="disable" class="btn btn-outline-danger">Or click here to logout.</button>
                 </div>
             </div>
         </div>
