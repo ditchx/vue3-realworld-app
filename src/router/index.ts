@@ -41,10 +41,17 @@ const router = createRouter({
 router.beforeEach((to, from) => {
   const store = useAuthStore()
   const guestPaths = ['login', 'register']
+  const authPaths = ['settings', 'create_article']
 
   if (store.isLoggedIn && guestPaths.includes(<string>to.name)) {
     return '/'
   }
+
+  if (!store.isLoggedIn && authPaths.includes(<string>to.name)) {
+    return '/'
+  }
+
+
 })
 
 export default router
