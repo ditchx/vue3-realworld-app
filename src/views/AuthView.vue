@@ -26,6 +26,7 @@ const unwatch = watch(currentUser, (u) => {
 
   unwatch()
   store.login(u)
+  router.push('/')
 })
 </script>
 <template>
