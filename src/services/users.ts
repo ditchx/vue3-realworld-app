@@ -17,11 +17,11 @@ export interface UseUserReturnType {
   currentUser: Ref<User>
   isLoggedIn: ComputedRef<boolean>
   errorMessage: Ref<string>
-  login: (email: string, password: string) => void
+  login: (email: string, password: string) => Promise<User>
   logout: () => void
-  register: (username: string, email: string, password: string) => void
-  getCurrentUser: (token: string) => void
-  updateCurrentUser: (user: UserUpdatableFields, token: string) => void
+  register: (username: string, email: string, password: string) => Promise<User>
+  getCurrentUser: (token: string) => Promise<User>
+  updateCurrentUser: (user: UpdateUser, token: string) => Promise<User>
 }
 
 export interface LoginUser {
@@ -38,13 +38,6 @@ export interface NewUser {
 export interface UpdateUser {
   email?: string
   password?: string
-  username?: string
-  bio?: string
-  image?: string
-}
-
-export interface UserUpdatableFields {
-  email?: string
   username?: string
   bio?: string
   image?: string
@@ -71,7 +64,7 @@ export function useUser(): UseUserReturnType {
     lastError.value = getErrors(error)
   }
 
-  async function login(email: string, password: string) {
+  async function login(email: string, password: string): Promise<User> {
     lastError.value = []
     try {
       const response = await axios.post(serviceURL + '/users/login', {
@@ -84,13 +77,14 @@ export function useUser(): UseUserReturnType {
     } catch (error) {
       _cleanUp(error)
     }
+    return currentUser.value
   }
 
   function logout() {
     currentUser.value = emptyUser()
   }
 
-  async function register(username: string, email: string, password: string) {
+  async function register(username: string, email: string, password: string): Promise<User> {
     lastError.value = []
     try {
       const response = await axios.post(serviceURL + '/users', {
@@ -104,9 +98,10 @@ export function useUser(): UseUserReturnType {
     } catch (error) {
       _cleanUp(error)
     }
+    return currentUser.value
   }
 
-  async function getCurrentUser(token: string) {
+  async function getCurrentUser(token: string): Promise<User> {
     lastError.value = []
     try {
       const response = await axios.get(serviceURL + '/user', {
@@ -118,9 +113,10 @@ export function useUser(): UseUserReturnType {
     } catch (error) {
       _cleanUp(error)
     }
+    return currentUser.value
   }
 
-  async function updateCurrentUser(user: UserUpdatableFields, token: string) {
+  async function updateCurrentUser(user: UpdateUser, token: string): Promise<User> {
     lastError.value = []
     try {
       const response = await axios.put(
@@ -142,6 +138,7 @@ export function useUser(): UseUserReturnType {
         }
       }
     }
+    return currentUser.value
   }
 
   return {
