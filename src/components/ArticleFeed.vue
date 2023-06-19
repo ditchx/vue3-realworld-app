@@ -15,6 +15,10 @@ const isFeed = ref(false)
 const { articleList, isLoading, getFeed, listArticles } = useArticle()
 
 function setFeed(feed: boolean) {
+  if (isLoading.value) {
+    return
+  }
+
   isFeed.value = feed
 
   if (feed) {
