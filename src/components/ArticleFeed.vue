@@ -33,22 +33,22 @@ onMounted(() => {
     if (val) {
       getFeed(store.user.token)
     } else {
-      listArticles()
+      listArticles({}, store.user.token)
     }
   })
 
   watch(() => props.tag, (val) => {
     if (val == '') {
-      listArticles()
+      listArticles({}, store.user.token)
       return
     }
-    listArticles({ tag: val })
+    listArticles({ tag: val }, store.user.token)
   })
 
   if (store.isLoggedIn) {
     isFeed.value = true
   } else {
-    listArticles()
+    listArticles({}, store.user.token)
   }
 })
 </script>
