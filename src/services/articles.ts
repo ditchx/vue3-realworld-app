@@ -50,7 +50,7 @@ export interface UseArticleReturnType {
   article: Ref<Article>
   articleList: Ref<Article[]>
   getFeed: (token: string) => void
-  listArticles: (params?: ArticleParams) => void
+  listArticles: (params?: ArticleParams, token?: string) => void
   addArticle: (newArticle: NewArticle, token: string) => void
   getArticle: (slug: string) => void
   updateArticle: (modArticle: UpdateArticle, slug: string, token: string) => void
@@ -104,13 +104,23 @@ export function useArticle(): UseArticleReturnType {
       favorited = null,
       limit = null,
       offset = null
-    }: ArticleParams = {}
+    }: ArticleParams = {}, 
+    token: string = ''
   ) {
     lastError.value = []
     isLoading.value = true
     try {
-      const params = { tag, author, favorited, limit, offset }
-      const response = await axios.get(serviceURL + '/articles', { params: params })
+      const cfg: any = { 
+        params: { tag, author, favorited, limit, offset }
+      } 
+
+      if (token) {
+        cfg.headers = {
+          Authorization: 'Token ' + token
+        }
+      }
+
+      const response = await axios.get(serviceURL + '/articles', cfg)
       articleList.value = response.data.articles
     } catch (error) {
       articleList.value = []
