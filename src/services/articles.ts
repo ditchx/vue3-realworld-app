@@ -209,7 +209,7 @@ export function useArticle(): UseArticleReturnType {
     lastError.value = []
     isLoading.value = true
     try {
-      const response = await axios.post(serviceURL + '/articles/' + slug + '/favorite', {
+      const response = await axios.post(serviceURL + '/articles/' + slug + '/favorite', {}, {
         headers: {
           Authorization: 'Token ' + token
         }
