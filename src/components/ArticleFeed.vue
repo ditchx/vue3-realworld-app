@@ -43,6 +43,8 @@ onMounted(() => {
 
   if (store.isLoggedIn) {
     isFeed.value = true
+  } else {
+    listArticles()
   }
 })
 </script>
