@@ -13,6 +13,11 @@ export function getErrors(e: any): string[] {
   if (axios.isAxiosError(e) && e.response) {
     const msg: string[] = []
 
+    if (e.response.data.message) {
+      msg.push(e.response.data.message)
+      return msg
+    }
+
     Object.keys(e.response.data.errors).forEach((k) =>
       msg.push(k + ' : ' + e.response?.data.errors[k].join(''))
     )
