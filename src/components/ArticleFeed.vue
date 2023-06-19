@@ -35,6 +35,7 @@ onMounted(() => {
 
   watch(() => props.tag, (val) => {
     if (val == '') {
+      listArticles()
       return
     }
     listArticles({ tag: val })
