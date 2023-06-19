@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { Article } from '@/services/articles'
 import { useDateFormat } from '@vueuse/core'
+import { RouterLink } from 'vue-router';
 defineProps<{
   article: Article
 }>()
@@ -8,9 +9,9 @@ defineProps<{
 <template>
   <div class="article-preview">
     <div class="article-meta">
-      <a href="profile.html"><img :src="article.author.image" /></a>
+      <router-link :to="{name: 'profile', params: { username: article.author.username }}"><img :src="article.author.image" /></router-link>
       <div class="info">
-        <a href="" class="author">{{ article.author.username }}</a>
+        <router-link :to="{name: 'profile', params: { username: article.author.username }}" class="author">{{ article.author.username }}</router-link>
         <span class="date">{{ useDateFormat(article.createdAt, 'MMMM D, YYYY').value }}</span>
       </div>
       <button :class="{'btn-primary' : article.favorited, 'btn-outline-primary': !article.favorited}" class="btn btn-sm pull-xs-right">
