@@ -13,7 +13,7 @@ defineProps<{
         <a href="" class="author">{{ article.author.username }}</a>
         <span class="date">{{ useDateFormat(article.createdAt, 'MMMM D, YYYY').value }}</span>
       </div>
-      <button class="btn btn-outline-primary btn-sm pull-xs-right">
+      <button :class="{'btn-primary' : article.favorited, 'btn-outline-primary': !article.favorited}" class="btn btn-sm pull-xs-right">
         <i class="ion-heart"></i> {{ article.favoritesCount }}
       </button>
     </div>
