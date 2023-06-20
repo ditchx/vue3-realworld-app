@@ -49,6 +49,7 @@ export interface UseArticleReturnType {
   isLoading: Ref<boolean>
   article: Ref<Article>
   articleList: Ref<Article[]>
+  totalCount: Ref<number>
   getFeed: (token: string) => Promise<void>
   listArticles: (params?: ArticleParams, token?: string) => Promise<void>
   addArticle: (newArticle: NewArticle, token: string) => Promise<void>
@@ -79,6 +80,7 @@ export function useArticle(): UseArticleReturnType {
   const isLoading = ref(false)
   const article = ref<Article>(emptyArticle())
   const articleList = ref<Article[]>([])
+  const totalCount = ref(0)
 
   async function getFeed(token: string): Promise<void> {
     lastError.value = []
@@ -90,8 +92,10 @@ export function useArticle(): UseArticleReturnType {
         }
       })
       articleList.value = response.data.articles
+      totalCount.value = response.data.articlesCount
     } catch (error) {
       articleList.value = []
+      totalCount.value = 0
       lastError.value = getErrors(error)
     }
     isLoading.value = false
@@ -122,8 +126,10 @@ export function useArticle(): UseArticleReturnType {
 
       const response = await axios.get(serviceURL + '/articles', cfg)
       articleList.value = response.data.articles
+      totalCount.value = response.data.articlesCount
     } catch (error) {
       articleList.value = []
+      totalCount.value = 0
       lastError.value = getErrors(error)
     }
     isLoading.value = false
@@ -242,6 +248,7 @@ export function useArticle(): UseArticleReturnType {
     isLoading,
     article,
     articleList,
+    totalCount,
     getFeed,
     listArticles,
     addArticle,
