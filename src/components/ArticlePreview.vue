@@ -1,10 +1,32 @@
 <script lang="ts" setup>
-import type { Article } from '@/services/articles'
+import { ref, watch } from 'vue';
+import { useArticle, type Article } from '@/services/articles'
 import { useDateFormat } from '@vueuse/core'
 import { RouterLink } from 'vue-router';
-defineProps<{
+import { useAuthStore } from '@/stores/auth';
+
+const store = useAuthStore()
+const props = defineProps<{
   article: Article
 }>()
+const article = ref(props.article)
+const { article: currentArticle , isLoading, addFavorite, removeFavorite } = useArticle()
+async function toggleFavorite() {
+  if (!store.isLoggedIn || isLoading.value) {
+    return
+  }
+
+  if (article.value.favorited) {
+    await removeFavorite(article.value.slug, store.user.token)
+  } else {
+    await addFavorite(article.value.slug, store.user.token)
+  }
+}
+
+watch(currentArticle, (c) => {
+  article.value.favorited = c.favorited
+})
+
 </script>
 <template>
   <div class="article-preview">
@@ -14,7 +36,7 @@ defineProps<{
         <router-link :to="{name: 'profile', params: { username: article.author.username }}" class="author">{{ article.author.username }}</router-link>
         <span class="date">{{ useDateFormat(article.createdAt, 'MMMM D, YYYY').value }}</span>
       </div>
-      <button :class="{'btn-primary' : article.favorited, 'btn-outline-primary': !article.favorited}" class="btn btn-sm pull-xs-right">
+      <button :disabled="isLoading" @click.prevent="toggleFavorite" :class="{'btn-primary' : article.favorited, 'btn-outline-primary': !article.favorited}" class="btn btn-sm pull-xs-right">
         <i class="ion-heart"></i> {{ article.favoritesCount }}
       </button>
     </div>
