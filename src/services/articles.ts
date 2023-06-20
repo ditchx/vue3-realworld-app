@@ -49,14 +49,14 @@ export interface UseArticleReturnType {
   isLoading: Ref<boolean>
   article: Ref<Article>
   articleList: Ref<Article[]>
-  getFeed: (token: string) => void
-  listArticles: (params?: ArticleParams, token?: string) => void
-  addArticle: (newArticle: NewArticle, token: string) => void
-  getArticle: (slug: string) => void
-  updateArticle: (modArticle: UpdateArticle, slug: string, token: string) => void
-  deleteArticle: (slug: string, token: string) => void
-  addFavorite: (slug: string, token: string) => void
-  removeFavorite: (slug: string, token: string) => void
+  getFeed: (token: string) => Promise<void>
+  listArticles: (params?: ArticleParams, token?: string) => Promise<void>
+  addArticle: (newArticle: NewArticle, token: string) => Promise<void>
+  getArticle: (slug: string) => Promise<void>
+  updateArticle: (modArticle: UpdateArticle, slug: string, token: string) => Promise<void>
+  deleteArticle: (slug: string, token: string) => Promise<void>
+  addFavorite: (slug: string, token: string) => Promise<void>
+  removeFavorite: (slug: string, token: string) => Promise<void>
 }
 
 export function emptyArticle(): Article {
@@ -80,7 +80,7 @@ export function useArticle(): UseArticleReturnType {
   const article = ref<Article>(emptyArticle())
   const articleList = ref<Article[]>([])
 
-  async function getFeed(token: string) {
+  async function getFeed(token: string): Promise<void> {
     lastError.value = []
     isLoading.value = true
     try {
@@ -106,7 +106,7 @@ export function useArticle(): UseArticleReturnType {
       offset = null
     }: ArticleParams = {}, 
     token: string = ''
-  ) {
+  ): Promise<void> {
     lastError.value = []
     isLoading.value = true
     try {
@@ -129,7 +129,7 @@ export function useArticle(): UseArticleReturnType {
     isLoading.value = false
   }
 
-  async function addArticle(newArticle: NewArticle, token: string) {
+  async function addArticle(newArticle: NewArticle, token: string): Promise<void> {
     lastError.value = []
     isLoading.value = true
     try {
@@ -152,7 +152,7 @@ export function useArticle(): UseArticleReturnType {
     isLoading.value = false
   }
 
-  async function getArticle(slug: string) {
+  async function getArticle(slug: string): Promise<void> {
     lastError.value = []
     isLoading.value = true
     try {
@@ -165,7 +165,7 @@ export function useArticle(): UseArticleReturnType {
     isLoading.value = false
   }
 
-  async function updateArticle(modArticle: UpdateArticle, slug: string, token: string) {
+  async function updateArticle(modArticle: UpdateArticle, slug: string, token: string): Promise<void> {
     lastError.value = []
     isLoading.value = true
     try {
@@ -188,7 +188,7 @@ export function useArticle(): UseArticleReturnType {
     isLoading.value = false
   }
 
-  async function deleteArticle(slug: string, token: string) {
+  async function deleteArticle(slug: string, token: string): Promise<void> {
     lastError.value = []
     isLoading.value = true
     try {
@@ -205,7 +205,7 @@ export function useArticle(): UseArticleReturnType {
     isLoading.value = false
   }
 
-  async function addFavorite(slug: string, token: string) {
+  async function addFavorite(slug: string, token: string): Promise<void> {
     lastError.value = []
     isLoading.value = true
     try {
@@ -221,7 +221,7 @@ export function useArticle(): UseArticleReturnType {
     isLoading.value = false
   }
 
-  async function removeFavorite(slug: string, token: string) {
+  async function removeFavorite(slug: string, token: string): Promise<void> {
     lastError.value = []
     isLoading.value = true
     try {
