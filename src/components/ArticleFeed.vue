@@ -28,27 +28,27 @@ function setFeed(feed: boolean) {
   }
 }
 
-onMounted(() => {
-  watch(isFeed, (val) => {
+onMounted(async () => {
+  watch(isFeed, async (val) => {
     if (val) {
-      getFeed(store.user.token)
+      await getFeed(store.user.token)
     } else {
-      listArticles({}, store.user.token)
+      await listArticles({}, store.user.token)
     }
   })
 
-  watch(() => props.tag, (val) => {
+  watch(() => props.tag, async (val) => {
     if (val == '') {
-      listArticles({}, store.user.token)
+      await listArticles({}, store.user.token)
       return
     }
-    listArticles({ tag: val }, store.user.token)
+    await listArticles({ tag: val }, store.user.token)
   })
 
   if (store.isLoggedIn) {
     isFeed.value = true
   } else {
-    listArticles({}, store.user.token)
+    await listArticles({}, store.user.token)
   }
 })
 </script>
