@@ -50,7 +50,7 @@ export interface UseArticleReturnType {
   article: Ref<Article>
   articleList: Ref<Article[]>
   totalCount: Ref<number>
-  getFeed: (token: string) => Promise<void>
+  getFeed: (token: string, params?: Pagination) => Promise<void>
   listArticles: (params?: ArticleParams, token?: string) => Promise<void>
   addArticle: (newArticle: NewArticle, token: string) => Promise<void>
   getArticle: (slug: string) => Promise<void>
@@ -82,15 +82,25 @@ export function useArticle(): UseArticleReturnType {
   const articleList = ref<Article[]>([])
   const totalCount = ref(0)
 
-  async function getFeed(token: string): Promise<void> {
+  async function getFeed(
+    token: string, 
+    {
+      limit = null,
+      offset = null
+    }: Pagination = {}
+  ): Promise<void> {
     lastError.value = []
     isLoading.value = true
     try {
-      const response = await axios.get(serviceURL + '/articles/feed', {
+
+      const cfg: any = {
+        params: { limit, offset },
         headers: {
           Authorization: 'Token ' + token
         }
-      })
+      }
+
+      const response = await axios.get(serviceURL + '/articles/feed', cfg)
       articleList.value = response.data.articles
       totalCount.value = response.data.articlesCount
     } catch (error) {
