@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import useArticle from '@/services/articles'
 import { useAuthStore } from '@/stores/auth'
-import { onMounted, watch, ref } from 'vue'
+import { onMounted, watch, ref, computed } from 'vue'
 import ArticlePreview from '@/components/ArticlePreview.vue'
+import ArticlePaginator from './ArticlePaginator.vue';
 
 const props = defineProps<{
   tag?: string
@@ -12,7 +13,9 @@ const emits = defineEmits<{
 }>()
 const store = useAuthStore()
 const isFeed = ref(false)
-const { articleList, isLoading, getFeed, listArticles } = useArticle()
+const { articleList, isLoading, totalCount, getFeed, listArticles } = useArticle()
+const limit = ref(10), page = ref(1)
+const offset = computed(() => (page.value - 1) * limit.value)
 
 function setFeed(feed: boolean) {
   if (isLoading.value) {
@@ -31,26 +34,78 @@ function setFeed(feed: boolean) {
 onMounted(async () => {
   watch(isFeed, async (val) => {
     if (val) {
-      await getFeed(store.user.token)
+      await getFeed(
+        store.user.token, {
+        offset: offset.value,
+        limit: limit.value
+      })
     } else {
-      await listArticles({}, store.user.token)
+      await listArticles({
+        offset: offset.value,
+        limit: limit.value
+
+      }, store.user.token)
     }
   })
 
   watch(() => props.tag, async (val) => {
     if (val == '') {
-      await listArticles({}, store.user.token)
+      await listArticles({
+        offset: offset.value,
+        limit: limit.value
+
+      }, store.user.token)
       return
     }
-    await listArticles({ tag: val }, store.user.token)
+    await listArticles({
+      tag: val, offset: offset.value,
+      limit: limit.value
+    }, store.user.token)
   })
 
   if (store.isLoggedIn) {
     isFeed.value = true
   } else {
-    await listArticles({}, store.user.token)
+    await listArticles({
+      offset: offset.value,
+      limit: limit.value
+    }, store.user.token)
   }
 })
+
+async function getPage(p: number) {
+  page.value = p
+
+  if (props.tag) {
+    await listArticles(
+      {
+        tag: props.tag,
+        offset: offset.value,
+        limit: limit.value
+      },
+      store.user.token)
+    return
+  }
+
+  if (isFeed.value) {
+    await getFeed(store.user.token, {
+      offset: offset.value,
+      limit: limit.value
+    })
+    return
+  }
+
+  await listArticles(
+    {
+      offset: offset.value,
+      limit: limit.value
+    },
+    store.user.token
+  )
+  return
+}
+
+
 </script>
 <template>
   <div class="col-md-9">
@@ -73,6 +128,8 @@ onMounted(async () => {
       <div v-if="!articleList.length" class="article-preview">No articles are here... yet.</div>
 
       <ArticlePreview v-for="article in articleList" :article="article" :key="article.slug" />
+
+      <ArticlePaginator @page-selected="getPage" :current-page="page" :limit="limit" :total="totalCount" />
     </div>
   </div>
 </template>
