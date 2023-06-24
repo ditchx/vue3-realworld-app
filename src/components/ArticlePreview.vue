@@ -44,6 +44,9 @@ watch(currentArticle, (c) => {
       <h1>{{ article.title }}</h1>
       <p>{{ article.description }}</p>
       <span>Read more...</span>
+      <ul v-if="article.tagList.length" class="tag-list">
+        <li v-for="tag in article.tagList" class="tag-default tag-pill tag-outline">{{ tag }}</li>
+      </ul>
     </a>
   </div>
 </template>
