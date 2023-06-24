@@ -25,6 +25,7 @@ async function toggleFavorite() {
 
 watch(currentArticle, (c) => {
   article.value.favorited = c.favorited
+  article.value.favoritesCount = c.favoritesCount
 })
 
 </script>
