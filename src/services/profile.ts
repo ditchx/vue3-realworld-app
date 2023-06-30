@@ -1,6 +1,7 @@
 import { ref, type Ref } from 'vue'
 import axios from 'axios'
 import { getServiceURL, getErrors } from '.'
+import { w } from 'vitest/dist/types-dea83b3d.js'
 
 const serviceURL = getServiceURL()
 
@@ -14,7 +15,7 @@ export interface Profile {
 export interface UseProfileReturnType {
   lastError: Ref<string[]>
   profile: Ref<Profile>
-  getProfile: (username: string) => void
+  getProfile: (username: string, token: string) => void
   follow: (username: string, token: string) => void
   unfollow: (username: string, token: string) => void
 }
@@ -37,10 +38,17 @@ export function useProfile(): UseProfileReturnType {
     lastError.value = getErrors(error)
   }
 
-  async function getProfile(username: string) {
+  async function getProfile(username: string, token: string) {
     lastError.value = []
     try {
-      const response = await axios.get(serviceURL + '/profiles/' + username)
+      const params: any = {}
+      if (token) {
+        params.headers = {
+          Authorization: 'Token ' + token
+        }
+      }
+      
+      const response = await axios.get(serviceURL + '/profiles/' + username, params)
       profile.value = response.data.profile
     } catch (error) {
       _cleanUp(error)
