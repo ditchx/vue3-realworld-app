@@ -47,7 +47,7 @@ export function useProfile(): UseProfileReturnType {
           Authorization: 'Token ' + token
         }
       }
-      
+
       const response = await axios.get(serviceURL + '/profiles/' + username, params)
       profile.value = response.data.profile
     } catch (error) {
@@ -58,7 +58,7 @@ export function useProfile(): UseProfileReturnType {
   async function follow(username: string, token: string) {
     lastError.value = []
     try {
-      const response = await axios.post(serviceURL + '/profiles/' + username, {
+      const response = await axios.post(serviceURL + '/profiles/' + username + '/follow', {}, {
         headers: {
           Authorization: 'Token ' + token
         }
@@ -72,7 +72,7 @@ export function useProfile(): UseProfileReturnType {
   async function unfollow(username: string, token: string) {
     lastError.value = []
     try {
-      const response = await axios.delete(serviceURL + '/profiles/' + username, {
+      const response = await axios.delete(serviceURL + '/profiles/' + username + '/follow', {
         headers: {
           Authorization: 'Token ' + token
         }
