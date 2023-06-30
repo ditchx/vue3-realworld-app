@@ -1,19 +1,33 @@
+<script lang="ts" setup>
+import { RouterLink, useRoute } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import useProfile from '@/services/profile';
+const route = useRoute()
+const store = useAuthStore()
+const selfProfile = <string>route.params.username === store.user.username
+const { profile, getProfile } = useProfile()
+
+getProfile(<string>route.params.username)
+
+</script>
 <template>
   <div class="profile-page">
     <div class="user-info">
       <div class="container">
         <div class="row">
           <div class="col-xs-12 col-md-10 offset-md-1">
-            <img src="http://i.imgur.com/Qr71crq.jpg" class="user-img" />
-            <h4>Eric Simons</h4>
+            <img :src="profile.image" class="user-img" />
+            <h4>{{ profile.username }}</h4>
             <p>
-              Cofounder @GoThinkster, lived in Aol's HQ for a few months, kinda looks like Peeta from
-              the Hunger Games
+              {{ profile.bio }}
             </p>
-            <button class="btn btn-sm btn-outline-secondary action-btn">
+            <button v-if="!selfProfile" class="btn btn-sm btn-outline-secondary action-btn">
               <i class="ion-plus-round"></i>
-              &nbsp; Follow Eric Simons
+              &nbsp; Follow {{ profile.username }}
             </button>
+            <router-link v-if="selfProfile" :to="{ name: 'settings' }"
+              class="btn btn-sm btn-outline-secondary action-btn"><i class="ion-gear-a"></i>&nbsp; Edit Profile
+              Settings</router-link>
           </div>
         </div>
       </div>
