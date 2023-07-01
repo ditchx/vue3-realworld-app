@@ -2,12 +2,17 @@
 import { RouterLink, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import useProfile from '@/services/profile';
+import FollowUser from '@/components/FollowUser.vue';
 const route = useRoute()
 const store = useAuthStore()
 const selfProfile = <string>route.params.username === store.user.username
 const { profile, getProfile } = useProfile()
 
-getProfile(<string>route.params.username)
+function loadProfile() {
+  getProfile(<string>route.params.username, store.user.token)
+}
+
+loadProfile()
 
 </script>
 <template>
@@ -21,10 +26,7 @@ getProfile(<string>route.params.username)
             <p>
               {{ profile.bio }}
             </p>
-            <button v-if="!selfProfile" class="btn btn-sm btn-outline-secondary action-btn">
-              <i class="ion-plus-round"></i>
-              &nbsp; Follow {{ profile.username }}
-            </button>
+            <FollowUser @unfollowed="loadProfile" @followed="loadProfile" v-if="!selfProfile" :profile="profile" />
             <router-link v-if="selfProfile" :to="{ name: 'settings' }"
               class="btn btn-sm btn-outline-secondary action-btn"><i class="ion-gear-a"></i>&nbsp; Edit Profile
               Settings</router-link>
