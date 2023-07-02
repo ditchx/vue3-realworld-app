@@ -18,10 +18,15 @@ export function getErrors(e: any): string[] {
       return msg
     }
 
-    Object.keys(e.response.data.errors).forEach((k) =>
-      msg.push(k + ' : ' + e.response?.data.errors[k].join(''))
-    )
-    return msg
+    if (e.response.data.errors) {
+      Object.keys(e.response.data.errors).forEach((k) =>
+        msg.push(k + ' : ' + e.response?.data.errors[k].join(''))
+      )
+      return msg
+    }
+
+    msg.push(e.message)
+
   }
   return []
 }
