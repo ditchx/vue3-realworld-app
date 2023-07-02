@@ -73,7 +73,7 @@ onMounted(() => {
 
 </script>
 <template>
-  <div class="profile-page">
+  <div v-if="profile.username" class="profile-page">
     <div class="user-info">
       <div class="container">
         <div class="row">
