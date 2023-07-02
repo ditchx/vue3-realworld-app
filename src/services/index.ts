@@ -26,7 +26,7 @@ export function getErrors(e: any): string[] {
     }
 
     msg.push(e.message)
-
+    return msg
   }
   return []
 }
