@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, ref, computed, watch } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import useProfile from '@/services/profile';
 import FollowUser from '@/components/FollowUser.vue';
@@ -9,10 +9,11 @@ import ArticlePreview from '@/components/ArticlePreview.vue'
 import ArticlePaginator from '@/components/ArticlePaginator.vue';
 
 const route = useRoute()
+const router = useRouter()
 const store = useAuthStore()
 const username = <string>route.params.username
 const selfProfile = username === store.user.username
-const { profile, getProfile } = useProfile()
+const { profile, lastError, getProfile } = useProfile()
 const { articleList, isLoading, totalCount, listArticles } = useArticle()
 const limit = ref(10), page = ref(1)
 const offset = computed(() => (page.value - 1) * limit.value)
@@ -50,6 +51,13 @@ async function getPage(p: number) {
 }
 
 onMounted(() => {
+
+  watch( () => lastError.value, (newValue) => {
+    if (newValue.length) {
+      router.push("/")
+    }
+  })
+
   loadProfile()
 
   watch(feedType, async(which) => {
