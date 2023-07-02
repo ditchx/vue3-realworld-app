@@ -1,18 +1,67 @@
 <script lang="ts" setup>
+import { onMounted, ref, computed, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import useProfile from '@/services/profile';
 import FollowUser from '@/components/FollowUser.vue';
+import useArticle from '@/services/articles';
+import ArticlePreview from '@/components/ArticlePreview.vue'
+import ArticlePaginator from '@/components/ArticlePaginator.vue';
+
 const route = useRoute()
 const store = useAuthStore()
-const selfProfile = <string>route.params.username === store.user.username
+const username = <string>route.params.username
+const selfProfile = username === store.user.username
 const { profile, getProfile } = useProfile()
+const { articleList, isLoading, totalCount, listArticles } = useArticle()
+const limit = ref(10), page = ref(1)
+const offset = computed(() => (page.value - 1) * limit.value)
+const feedType = ref("author")
 
 function loadProfile() {
   getProfile(<string>route.params.username, store.user.token)
 }
 
-loadProfile()
+async function loadFeed(which: string) {
+  if (which == 'author') {
+      await listArticles({
+        offset: offset.value,
+        limit: limit.value,
+        author: username
+      }, store.user.token)
+    }
+
+    if (which == 'favorite') {
+      await listArticles({
+        offset: offset.value,
+        limit: limit.value,
+        favorited: username
+      }, store.user.token)
+    }
+}
+
+function setFeed(which: string) {
+  feedType.value = which
+}
+
+async function getPage(p: number) {
+  page.value = p
+  loadFeed(feedType.value)
+}
+
+onMounted(() => {
+  loadProfile()
+
+  watch(feedType, async(which) => {
+    page.value = 1
+    await loadFeed(which)
+  }, {immediate: true})
+
+
+})
+
+
+
 
 </script>
 <template>
@@ -38,56 +87,27 @@ loadProfile()
     <div class="container">
       <div class="row">
         <div class="col-xs-12 col-md-10 offset-md-1">
+
           <div class="articles-toggle">
             <ul class="nav nav-pills outline-active">
-              <li class="nav-item">
-                <a class="nav-link active" href="">My Articles</a>
+              <li v-if="store.isLoggedIn" class="nav-item">
+                <a @click.prevent="setFeed('author')" class="nav-link" :class="{ active: feedType == 'author' }" href="">My Articles</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="">Favorited Articles</a>
+                <a @click.prevent="setFeed('favorite')" class="nav-link" :class="{ active: feedType == 'favorite' }" href="">Favorited Articles</a>
               </li>
             </ul>
           </div>
 
-          <div class="article-preview">
-            <div class="article-meta">
-              <a href=""><img src="http://i.imgur.com/Qr71crq.jpg" /></a>
-              <div class="info">
-                <a href="" class="author">Eric Simons</a>
-                <span class="date">January 20th</span>
-              </div>
-              <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                <i class="ion-heart"></i> 29
-              </button>
-            </div>
-            <a href="" class="preview-link">
-              <h1>How to build webapps that scale</h1>
-              <p>This is the description for the post.</p>
-              <span>Read more...</span>
-            </a>
+          <div v-if="isLoading" class="article-preview">Loading articles ...</div>
+          <div v-else>
+            <div v-if="!articleList.length" class="article-preview">No articles are here... yet.</div>
+
+            <ArticlePreview v-for="article in articleList" :article="article" :key="article.slug" />
+
+            <ArticlePaginator @page-selected="getPage" :current-page="page" :limit="limit" :total="totalCount" />
           </div>
 
-          <div class="article-preview">
-            <div class="article-meta">
-              <a href=""><img src="http://i.imgur.com/N4VcUeJ.jpg" /></a>
-              <div class="info">
-                <a href="" class="author">Albert Pai</a>
-                <span class="date">January 20th</span>
-              </div>
-              <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                <i class="ion-heart"></i> 32
-              </button>
-            </div>
-            <a href="" class="preview-link">
-              <h1>The song you won't ever stop singing. No matter how hard you try.</h1>
-              <p>This is the description for the post.</p>
-              <span>Read more...</span>
-              <ul class="tag-list">
-                <li class="tag-default tag-pill tag-outline">Music</li>
-                <li class="tag-default tag-pill tag-outline">Song</li>
-              </ul>
-            </a>
-          </div>
         </div>
       </div>
     </div>
