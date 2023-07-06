@@ -23,13 +23,13 @@ const article = ref(props.article)
       </div>
       <FavoriteButton :article="article" />
     </div>
-    <a href="" class="preview-link">
+    <router-link :to="{name: 'article', params: { slug: article.slug }}" class="preview-link">
       <h1>{{ article.title }}</h1>
       <p>{{ article.description }}</p>
       <span>Read more...</span>
       <ul v-if="article.tagList.length" class="tag-list">
         <li v-for="tag in article.tagList" class="tag-default tag-pill tag-outline">{{ tag }}</li>
       </ul>
-    </a>
+    </router-link>
   </div>
 </template>
