@@ -35,7 +35,9 @@ async function toggleFavorite() {
 <template>
     <button :disabled="isLoading" @click.prevent="toggleFavorite"
         :class="{ 'btn-primary': article.favorited, 'btn-outline-primary': !article.favorited }"
-        class="btn btn-sm pull-xs-right">
-        <i class="ion-heart"></i> {{ article.favoritesCount }}
+        class="btn btn-sm">
+        <slot>
+          <i class="ion-heart"></i> {{ article.favoritesCount }}
+        </slot>
     </button>
 </template>
