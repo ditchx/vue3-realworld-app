@@ -1,3 +1,14 @@
+<script lang="ts" setup>
+import { useRoute } from 'vue-router';
+import useArticle from '@/services/articles'
+import FavoriteButton from '@/components/FavoriteButton.vue';
+
+const route = useRoute()
+const {article, isLoading} = useArticle()
+
+console.log(route.params.slug)
+
+</script>
 <template>
     <div class="article-page">
         <div class="banner">
@@ -15,10 +26,10 @@
                         &nbsp; Follow Eric Simons <span class="counter">(10)</span>
                     </button>
                     &nbsp;&nbsp;
-                    <button class="btn btn-sm btn-outline-primary">
+                    <favorite-button :article="article">
                         <i class="ion-heart"></i>
-                        &nbsp; Favorite Post <span class="counter">(29)</span>
-                    </button>
+                        &nbsp; Favorite Post <span class="counter">(20)</span>
+                    </favorite-button>
                 </div>
             </div>
         </div>

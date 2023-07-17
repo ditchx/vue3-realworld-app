@@ -21,7 +21,7 @@ const article = ref(props.article)
         <router-link :to="{name: 'profile', params: { username: article.author.username }}" class="author">{{ article.author.username }}</router-link>
         <span class="date">{{ useDateFormat(article.createdAt, 'MMMM D, YYYY').value }}</span>
       </div>
-      <FavoriteButton :article="article" />
+      <FavoriteButton :article="article" class="pull-xs-right" />
     </div>
     <router-link :to="{name: 'article', params: { slug: article.slug }}" class="preview-link">
       <h1>{{ article.title }}</h1>
