@@ -6,7 +6,6 @@ import FavoriteButton from '@/components/FavoriteButton.vue';
 const route = useRoute()
 const {article, isLoading} = useArticle()
 
-console.log(route.params.slug)
 
 </script>
 <template>
