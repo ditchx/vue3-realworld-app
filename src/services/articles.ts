@@ -173,7 +173,7 @@ export function useArticle(): UseArticleReturnType {
     isLoading.value = true
     try {
       const response = await axios.get(serviceURL + '/articles/' + slug)
-      articleList.value = response.data.article
+      article.value = response.data.article
     } catch (error) {
       article.value = emptyArticle()
       lastError.value = getErrors(error)
