@@ -53,7 +53,7 @@ export interface UseArticleReturnType {
   getFeed: (token: string, params?: Pagination) => Promise<void>
   listArticles: (params?: ArticleParams, token?: string) => Promise<void>
   addArticle: (newArticle: NewArticle, token: string) => Promise<void>
-  getArticle: (slug: string) => Promise<void>
+  getArticle: (slug: string, token?: string) => Promise<void>
   updateArticle: (modArticle: UpdateArticle, slug: string, token: string) => Promise<void>
   deleteArticle: (slug: string, token: string) => Promise<void>
   addFavorite: (slug: string, token: string) => Promise<void>
@@ -168,11 +168,19 @@ export function useArticle(): UseArticleReturnType {
     isLoading.value = false
   }
 
-  async function getArticle(slug: string): Promise<void> {
+  async function getArticle(slug: string, token?: string): Promise<void> {
     lastError.value = []
     isLoading.value = true
     try {
-      const response = await axios.get(serviceURL + '/articles/' + slug)
+      const cfg: any = {}
+
+      if (token) {
+        cfg.headers = {
+          Authorization: 'Token ' + token
+        }
+      }
+
+      const response = await axios.get(serviceURL + '/articles/' + slug, cfg)
       article.value = response.data.article
     } catch (error) {
       article.value = emptyArticle()
