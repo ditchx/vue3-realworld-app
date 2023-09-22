@@ -1,4 +1,4 @@
-import { ref, type Ref } from 'vue'
+import { ref, type Ref, type InjectionKey } from 'vue'
 import { getServiceURL, getErrors } from '.'
 import axios from 'axios'
 import { emptyProfile, type Profile } from './profile'
@@ -59,6 +59,13 @@ export interface UseArticleReturnType {
   addFavorite: (slug: string, token: string) => Promise<void>
   removeFavorite: (slug: string, token: string) => Promise<void>
 }
+
+export interface ArticleProvider {
+  article: Ref<Article>
+  updateFavorite: (favorite: boolean) => void
+}
+
+export const articleProviderKey = Symbol() as InjectionKey<ArticleProvider>
 
 export function emptyArticle(): Article {
   return {
