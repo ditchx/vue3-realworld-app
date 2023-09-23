@@ -1,15 +1,38 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router';
-import useArticle from '@/services/articles'
+import { useArticle } from '@/services/articles'
+import ArticleMeta from '@/components/ArticleMeta.vue';
+import { articleProviderKey } from '@/services/articles';
+import { useAuthStore } from '@/stores/auth';
+import { onMounted, provide } from 'vue';
 import FavoriteButton from '@/components/FavoriteButton.vue';
-import { onMounted } from 'vue';
 
 const route = useRoute()
+const store = useAuthStore()
 const {article, getArticle, isLoading} = useArticle()
 
-onMounted(() => {
-  getArticle(<string>route.params['slug'])
+function updateFavorite(favorite: boolean): void {
+  if (article.value.favorited === favorite) {
+      return
+  }
 
+  article.value.favorited = favorite;
+
+  if (favorite) {
+    article.value.favoritesCount++       
+  } else {
+    article.value.favoritesCount-- 
+  }
+
+}
+
+provide(articleProviderKey, {
+  article,
+  updateFavorite
+})
+
+onMounted(() => {
+  getArticle(<string>route.params['slug'], store.user.token)
 })
 
 </script>
@@ -18,23 +41,7 @@ onMounted(() => {
         <div class="banner">
             <div class="container">
                 <h1>{{ article.title }}</h1>
-
-                <div class="article-meta">
-                    <a href=""><img src="http://i.imgur.com/Qr71crq.jpg" /></a>
-                    <div class="info">
-                        <a href="" class="author">Eric Simons</a>
-                        <span class="date">January 20th</span>
-                    </div>
-                    <button class="btn btn-sm btn-outline-secondary">
-                        <i class="ion-plus-round"></i>
-                        &nbsp; Follow Eric Simons <span class="counter">(10)</span>
-                    </button>
-                    &nbsp;&nbsp;
-                    <favorite-button :article="article">
-                        <i class="ion-heart"></i>
-                        &nbsp; Favorite Post <span class="counter">(20)</span>
-                    </favorite-button>
-                </div>
+                <ArticleMeta />
             </div>
         </div>
 
@@ -60,10 +67,11 @@ onMounted(() => {
                         &nbsp; Follow Eric Simons
                     </button>
                     &nbsp;
-                    <button class="btn btn-sm btn-outline-primary">
+                    <favorite-button>  
                         <i class="ion-heart"></i>
-                        &nbsp; Favorite Article <span class="counter">(29)</span>
-                    </button>
+                      &nbsp; {{ article.favorited ? 'Unfavorite' : 'Favorite' }} Article <span class="counter">({{ article.favoritesCount }})</span>
+                    </favorite-button>
+
                 </div>
             </div>
 
