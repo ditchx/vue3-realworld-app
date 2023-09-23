@@ -1,39 +1,30 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { useArticle, type Article } from '@/services/articles'
+import { useArticle, articleProviderKey, type ArticleProvider } from '@/services/articles'
 import { useAuthStore } from '@/stores/auth';
+import { inject } from 'vue';
 
-
-const props = defineProps<{
-    article: Article
-}>()
-
-const emit = defineEmits<{
-    (e: 'favorite-clicked', newValue: boolean, oldValue: boolean): void
-}>()
 const store = useAuthStore()
-
-const { article, isLoading, addFavorite, removeFavorite } = useArticle()
-
-article.value = props.article
+const { isLoading, addFavorite, removeFavorite } = useArticle()
+const { article, updateFavorite } = inject(articleProviderKey) as ArticleProvider
 
 async function toggleFavorite() {
   if (!store.isLoggedIn || isLoading.value) {
     return
   }
 
-  emit('favorite-clicked', !article.value.favorited, article.value.favorited)
   if (article.value.favorited) {
-    await removeFavorite(props.article.slug, store.user.token)
+    await removeFavorite(article.value.slug, store.user.token)
   } else {
-    await addFavorite(props.article.slug, store.user.token)
+    await addFavorite(article.value.slug, store.user.token)
   }
+
+  updateFavorite(!article.value.favorited) 
 }
 
 
 </script>
 <template>
-    <button :disabled="isLoading" @click.prevent="toggleFavorite"
+    <button :disabled="isLoading" @click.prevent="toggleFavorite" 
         :class="{ 'btn-primary': article.favorited, 'btn-outline-primary': !article.favorited }"
         class="btn btn-sm">
         <slot>
