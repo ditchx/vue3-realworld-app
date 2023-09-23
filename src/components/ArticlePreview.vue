@@ -1,16 +1,37 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
-import { useArticle, type Article } from '@/services/articles'
+import { ref, provide } from 'vue';
+import { type Article } from '@/services/articles'
+import { articleProviderKey } from '@/services/articles';
 import { useDateFormat } from '@vueuse/core'
 import { RouterLink } from 'vue-router';
-import { useAuthStore } from '@/stores/auth';
 import FavoriteButton from './FavoriteButton.vue';
 
-const store = useAuthStore()
 const props = defineProps<{
   article: Article
 }>()
 const article = ref(props.article)
+
+function updateFavorite(favorite: boolean): void {
+  if (article.value.favorited === favorite) {
+      return
+  }
+
+  article.value.favorited = favorite;
+
+  if (favorite) {
+    article.value.favoritesCount++       
+  } else {
+    article.value.favoritesCount-- 
+  }
+
+}
+
+provide(articleProviderKey, {
+  article,
+  updateFavorite
+})
+
+
 
 </script>
 <template>
@@ -21,7 +42,7 @@ const article = ref(props.article)
         <router-link :to="{name: 'profile', params: { username: article.author.username }}" class="author">{{ article.author.username }}</router-link>
         <span class="date">{{ useDateFormat(article.createdAt, 'MMMM D, YYYY').value }}</span>
       </div>
-      <FavoriteButton :article="article" class="pull-xs-right" />
+      <FavoriteButton class="pull-xs-right" />
     </div>
     <router-link :to="{name: 'article', params: { slug: article.slug }}" class="preview-link">
       <h1>{{ article.title }}</h1>
