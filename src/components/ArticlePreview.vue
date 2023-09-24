@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { ref, provide } from 'vue';
-import { type Article } from '@/services/articles'
-import { articleProviderKey } from '@/services/articles';
+import { ref } from 'vue';
+import { type Article, provideArticle } from '@/services/articles'
 import { useDateFormat } from '@vueuse/core'
 import { RouterLink } from 'vue-router';
 import FavoriteButton from './FavoriteButton.vue';
@@ -11,27 +10,7 @@ const props = defineProps<{
 }>()
 const article = ref(props.article)
 
-function updateFavorite(favorite: boolean): void {
-  if (article.value.favorited === favorite) {
-      return
-  }
-
-  article.value.favorited = favorite;
-
-  if (favorite) {
-    article.value.favoritesCount++       
-  } else {
-    article.value.favoritesCount-- 
-  }
-
-}
-
-provide(articleProviderKey, {
-  article,
-  updateFavorite
-})
-
-
+provideArticle(article)
 
 </script>
 <template>

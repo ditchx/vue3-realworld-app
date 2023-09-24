@@ -1,4 +1,4 @@
-import { ref, type Ref, type InjectionKey } from 'vue'
+import { provide, ref, type Ref, type InjectionKey } from 'vue'
 import { getServiceURL, getErrors } from '.'
 import axios from 'axios'
 import { emptyProfile, type Profile } from './profile'
@@ -80,6 +80,29 @@ export function emptyArticle(): Article {
     favoritesCount: 0,
     author: emptyProfile()
   }
+}
+
+export function provideArticle(article: Ref<Article>): void{
+
+  const updateFavorite = function updateFavorite(favorite: boolean): void {
+    if (article.value.favorited === favorite) {
+        return
+    }
+
+    article.value.favorited = favorite;
+
+    if (favorite) {
+      article.value.favoritesCount++       
+    } else {
+      article.value.favoritesCount-- 
+    }
+
+  }
+
+  provide(articleProviderKey, {
+    article,
+    updateFavorite
+  })
 }
 
 export function useArticle(): UseArticleReturnType {

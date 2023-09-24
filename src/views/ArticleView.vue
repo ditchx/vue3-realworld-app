@@ -1,35 +1,16 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router';
-import { useArticle } from '@/services/articles'
+import { useArticle, provideArticle } from '@/services/articles'
 import ArticleMeta from '@/components/ArticleMeta.vue';
-import { articleProviderKey } from '@/services/articles';
 import { useAuthStore } from '@/stores/auth';
-import { onMounted, provide } from 'vue';
+import { onMounted } from 'vue';
 import FavoriteButton from '@/components/FavoriteButton.vue';
 
 const route = useRoute()
 const store = useAuthStore()
 const {article, getArticle, isLoading} = useArticle()
 
-function updateFavorite(favorite: boolean): void {
-  if (article.value.favorited === favorite) {
-      return
-  }
-
-  article.value.favorited = favorite;
-
-  if (favorite) {
-    article.value.favoritesCount++       
-  } else {
-    article.value.favoritesCount-- 
-  }
-
-}
-
-provide(articleProviderKey, {
-  article,
-  updateFavorite
-})
+provideArticle(article)
 
 onMounted(() => {
   getArticle(<string>route.params['slug'], store.user.token)
