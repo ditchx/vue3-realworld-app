@@ -1,48 +1,38 @@
 <script lang="ts" setup>
-import { useProfile, type Profile } from '@/services/profile'
+import { useProfile, injectProfile } from '@/services/profile'
 import { useAuthStore } from '@/stores/auth';
-import { ref, watch } from 'vue'
-
-const props = defineProps<{
-    profile: Profile
-}>()
-
-const emit = defineEmits<{
-    (e: 'followed' ): void
-    (e: 'unfollowed'): void
-}>()
+import { ref } from 'vue'
+const { profile, updateFollowing } = injectProfile()
 
 const store = useAuthStore()
 const { follow, unfollow } = useProfile()
 const disabled = ref(false)
-
-watch(() => props.profile, () => {
-    disabled.value = false
-})
 
 async function toggleFollow(): Promise<void> {
     if (!store.user.token) {
         return
     }
 
-    if (props.profile.following) {
+    const newValue = !profile.value.following
+
+    if (profile.value.following) {
         disabled.value = true
-        await unfollow(props.profile.username, store.user.token)
-        emit('unfollowed')
+        await unfollow(profile.value.username, store.user.token)
+        updateFollowing(newValue)
+        disabled.value = false
         return
     }
 
     disabled.value = true
-    await follow(props.profile.username, store.user.token)
-    emit('followed')
-
+    await follow(profile.value.username, store.user.token)
+    updateFollowing(newValue)
+    disabled.value = false
 }
-
 
 </script>
 <template>
     <button :disabled="disabled" @click.prevent="toggleFollow" class="btn btn-sm btn-outline-secondary action-btn">
         <i class="ion-plus-round"></i>
-        &nbsp; {{ props.profile.following ? 'Unfollow' : 'Follow' }} {{ props.profile.username }}
+        &nbsp; {{ profile.following ? 'Unfollow' : 'Follow' }} {{ profile.username }}
     </button>
 </template>
