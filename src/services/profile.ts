@@ -16,8 +16,8 @@ export interface UseProfileReturnType {
   lastError: Ref<string[]>
   profile: Ref<Profile>
   getProfile: (username: string, token: string) => void
-  follow: (username: string, token: string) => void
-  unfollow: (username: string, token: string) => void
+  follow: (username: string, token: string) => Promise<void>
+  unfollow: (username: string, token: string) => Promise<void>
 }
 
 export interface ProfileProvider {
@@ -82,7 +82,7 @@ export function useProfile(): UseProfileReturnType {
     }
   }
 
-  async function follow(username: string, token: string) {
+  async function follow(username: string, token: string): Promise<void> {
     lastError.value = []
     try {
       const response = await axios.post(serviceURL + '/profiles/' + username + '/follow', {}, {
@@ -96,7 +96,7 @@ export function useProfile(): UseProfileReturnType {
     }
   }
 
-  async function unfollow(username: string, token: string) {
+  async function unfollow(username: string, token: string): Promise<void> {
     lastError.value = []
     try {
       const response = await axios.delete(serviceURL + '/profiles/' + username + '/follow', {
