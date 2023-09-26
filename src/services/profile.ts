@@ -1,7 +1,7 @@
-import { ref, type Ref } from 'vue'
+import { ref, provide, inject, type Ref, type InjectionKey } from 'vue'
 import axios from 'axios'
 import { getServiceURL, getErrors } from '.'
-import { w } from 'vitest/dist/types-dea83b3d.js'
+
 
 const serviceURL = getServiceURL()
 
@@ -18,6 +18,33 @@ export interface UseProfileReturnType {
   getProfile: (username: string, token: string) => void
   follow: (username: string, token: string) => void
   unfollow: (username: string, token: string) => void
+}
+
+export interface ProfileProvider {
+  profile: Ref<Profile>,
+  updateFollowing: (follow: boolean) => void
+}
+
+export const profileProviderKey = Symbol() as InjectionKey<ProfileProvider>
+
+export function provideProfile(profile: Ref<Profile>): void {
+
+  const updateFollowing = function(follow: boolean): void {
+    if (profile.value.following === follow) {
+      return
+    }
+
+    profile.value.following = follow 
+  }
+
+  provide(profileProviderKey, {
+    profile: profile,
+    updateFollowing: updateFollowing
+  })
+}
+
+export function injectProfile(): ProfileProvider {
+  return inject(profileProviderKey) as ProfileProvider
 }
 
 export function emptyProfile(): Profile {
