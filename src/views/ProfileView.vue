@@ -7,6 +7,7 @@ import FollowUser from '@/components/FollowUser.vue';
 import useArticle from '@/services/articles';
 import ArticlePreview from '@/components/ArticlePreview.vue'
 import ArticlePaginator from '@/components/ArticlePaginator.vue';
+import { provideProfile } from '@/services/profile';
 
 const route = useRoute()
 const router = useRouter()
@@ -50,6 +51,8 @@ async function getPage(p: number) {
   loadFeed(feedType.value)
 }
 
+provideProfile(profile)
+
 onMounted(() => {
 
   watch( () => lastError.value, (newValue) => {
@@ -83,7 +86,7 @@ onMounted(() => {
             <p>
               {{ profile.bio }}
             </p>
-            <FollowUser @unfollowed="loadProfile" @followed="loadProfile" v-if="!selfProfile" :profile="profile" />
+            <FollowUser v-if="!selfProfile" />
             <router-link v-if="selfProfile" :to="{ name: 'settings' }"
               class="btn btn-sm btn-outline-secondary action-btn"><i class="ion-gear-a"></i>&nbsp; Edit Profile
               Settings</router-link>

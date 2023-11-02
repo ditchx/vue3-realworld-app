@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router';
 import { useArticle, provideArticle } from '@/services/articles'
+import { provideProfile } from '@/services/profile';
 import ArticleMeta from '@/components/ArticleMeta.vue';
 import { useAuthStore } from '@/stores/auth';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import FavoriteButton from '@/components/FavoriteButton.vue';
 
 const route = useRoute()
@@ -11,6 +12,7 @@ const store = useAuthStore()
 const {article, getArticle, isLoading} = useArticle()
 
 provideArticle(article)
+provideProfile(ref(article.value.author))
 
 onMounted(() => {
   getArticle(<string>route.params['slug'], store.user.token)
