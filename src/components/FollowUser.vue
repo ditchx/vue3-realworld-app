@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useProfile, injectProfile } from '@/services/profile'
 import { useAuthStore } from '@/stores/auth';
-import type { isSet } from 'util/types';
 import { ref, computed } from 'vue'
 const { profile, updateFollowing } = injectProfile()
 
