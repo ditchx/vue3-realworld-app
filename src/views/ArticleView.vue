@@ -45,21 +45,7 @@ onMounted(() => {
             <hr />
 
             <div class="article-actions">
-                <div class="article-meta">
-                    <a href="profile.html"><img src="http://i.imgur.com/Qr71crq.jpg" /></a>
-                    <div class="info">
-                        <a href="" class="author">Eric Simons</a>
-                        <span class="date">January 20th</span>
-                    </div>
-
-                    <FollowUser v-if="!isLoading"/>
-                    &nbsp;
-                    <favorite-button>  
-                        <i class="ion-heart"></i>
-                      &nbsp; {{ article.favorited ? 'Unfavorite' : 'Favorite' }} Article <span class="counter">({{ article.favoritesCount }})</span>
-                    </favorite-button>
-
-                </div>
+                <ArticleMeta />
             </div>
 
             <div class="row">
