@@ -1,11 +1,10 @@
 <script lang="ts" setup="">
-import type { ArticleProvider } from '@/services/articles';
-import { articleProviderKey } from '@/services/articles';
+import { injectArticle } from '@/services/articles';
 import FavoriteButton from './FavoriteButton.vue';
 import { useDateFormat } from '@vueuse/core';
-import { inject } from 'vue';
+import FollowUser from './FollowUser.vue';
+const { article } = injectArticle()
 
-const { article } = inject(articleProviderKey) as ArticleProvider;
 
 </script>
 <template>
@@ -15,10 +14,7 @@ const { article } = inject(articleProviderKey) as ArticleProvider;
       <router-link :to="{name: 'profile', params: { username: article.author.username }}" class="author">{{ article.author.username }}</router-link>
       <span class="date">{{ useDateFormat(article.createdAt, 'MMMM D, YYYY').value }}</span>
     </div>
-    <button class="btn btn-sm btn-outline-secondary">
-        <i class="ion-plus-round"></i>
-        &nbsp; Follow Eric Simons <span class="counter">(10)</span>
-    </button>
+    <FollowUser />
     &nbsp;&nbsp;
     <favorite-button>  
         <i class="ion-heart"></i>
