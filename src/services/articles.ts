@@ -1,4 +1,4 @@
-import { provide, ref, type Ref, type InjectionKey } from 'vue'
+import { provide, inject, ref, type Ref, type InjectionKey } from 'vue'
 import { getServiceURL, getErrors } from '.'
 import axios from 'axios'
 import { emptyProfile, type Profile } from './profile'
@@ -103,6 +103,10 @@ export function provideArticle(article: Ref<Article>): void{
     article,
     updateFavorite
   })
+}
+
+export function injectArticle(): ArticleProvider {
+  return inject(articleProviderKey) as ArticleProvider 
 }
 
 export function useArticle(): UseArticleReturnType {
