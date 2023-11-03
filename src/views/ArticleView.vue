@@ -4,17 +4,24 @@ import { useArticle, provideArticle } from '@/services/articles'
 import { provideProfile } from '@/services/profile';
 import ArticleMeta from '@/components/ArticleMeta.vue';
 import { useAuthStore } from '@/stores/auth';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import FavoriteButton from '@/components/FavoriteButton.vue';
+import FollowUser from '@/components/FollowUser.vue';
 
 const route = useRoute()
 const store = useAuthStore()
 const {article, getArticle, isLoading} = useArticle()
 
 provideArticle(article)
-provideProfile(ref(article.value.author))
+
+const profile = ref(article.value.author)
+provideProfile(profile)
 
 onMounted(() => {
+  watch(article, (newValue) => {
+    profile.value = newValue.author
+  })
+
   getArticle(<string>route.params['slug'], store.user.token)
 })
 
@@ -45,10 +52,7 @@ onMounted(() => {
                         <span class="date">January 20th</span>
                     </div>
 
-                    <button class="btn btn-sm btn-outline-secondary">
-                        <i class="ion-plus-round"></i>
-                        &nbsp; Follow Eric Simons
-                    </button>
+                    <FollowUser v-if="!isLoading"/>
                     &nbsp;
                     <favorite-button>  
                         <i class="ion-heart"></i>
