@@ -1,10 +1,13 @@
 <script lang="ts" setup>
 import { useProfile, injectProfile } from '@/services/profile'
 import { useAuthStore } from '@/stores/auth';
-import { ref } from 'vue'
+import type { isSet } from 'util/types';
+import { ref, computed } from 'vue'
 const { profile, updateFollowing } = injectProfile()
 
 const store = useAuthStore()
+const isSelf = computed(() => profile.value.username == store.user.username);
+
 const { follow, unfollow } = useProfile()
 const disabled = ref(false)
 
@@ -31,7 +34,7 @@ async function toggleFollow(): Promise<void> {
 
 </script>
 <template>
-    <button :disabled="disabled" @click.prevent="toggleFollow" class="btn btn-sm btn-outline-secondary action-btn">
+    <button v-if="!isSelf" :disabled="disabled" @click.prevent="toggleFollow" class="btn btn-sm btn-outline-secondary action-btn">
         <i class="ion-plus-round"></i>
         &nbsp; {{ profile.following ? 'Unfollow' : 'Follow' }} {{ profile.username }}
     </button>
