@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import { useArticle, articleProviderKey, type ArticleProvider } from '@/services/articles'
 import { useAuthStore } from '@/stores/auth';
-import { inject } from 'vue';
+import { computed, inject } from 'vue';
 
 const store = useAuthStore()
 const { isLoading, addFavorite, removeFavorite } = useArticle()
 const { article, updateFavorite } = inject(articleProviderKey) as ArticleProvider
+
+const isOwner = computed(() => article.value.author.username == store.user.username)
 
 async function toggleFavorite() {
   if (!store.isLoggedIn || isLoading.value) {
@@ -24,7 +26,7 @@ async function toggleFavorite() {
 
 </script>
 <template>
-    <button :disabled="isLoading" @click.prevent="toggleFavorite" 
+    <button v-if="!isOwner" :disabled="isLoading" @click.prevent="toggleFavorite" 
         :class="{ 'btn-primary': article.favorited, 'btn-outline-primary': !article.favorited }"
         class="btn btn-sm">
         <slot>
