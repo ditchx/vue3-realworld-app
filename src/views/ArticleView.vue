@@ -5,8 +5,6 @@ import { provideProfile } from '@/services/profile';
 import ArticleMeta from '@/components/ArticleMeta.vue';
 import { useAuthStore } from '@/stores/auth';
 import { onMounted, ref, watch } from 'vue';
-import FavoriteButton from '@/components/FavoriteButton.vue';
-import FollowUser from '@/components/FollowUser.vue';
 
 const route = useRoute()
 const store = useAuthStore()
