@@ -4,6 +4,7 @@ import { type Article, provideArticle } from '@/services/articles'
 import { useDateFormat } from '@vueuse/core'
 import { RouterLink } from 'vue-router';
 import FavoriteButton from './FavoriteButton.vue';
+import ArticleTagList from './ArticleTagList.vue';
 
 const props = defineProps<{
   article: Article
@@ -27,9 +28,7 @@ provideArticle(article)
       <h1>{{ article.title }}</h1>
       <p>{{ article.description }}</p>
       <span>Read more...</span>
-      <ul v-if="article.tagList.length" class="tag-list">
-        <li v-for="tag in article.tagList" class="tag-default tag-pill tag-outline">{{ tag }}</li>
-      </ul>
+      <ArticleTagList :tags="article.tagList" />
     </router-link>
   </div>
 </template>

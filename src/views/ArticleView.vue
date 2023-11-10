@@ -5,6 +5,7 @@ import { provideProfile } from '@/services/profile';
 import ArticleMeta from '@/components/ArticleMeta.vue';
 import { useAuthStore } from '@/stores/auth';
 import { onMounted, ref, watch } from 'vue';
+import ArticleTagList from '@/components/ArticleTagList.vue';
 
 const route = useRoute()
 const store = useAuthStore()
@@ -38,6 +39,7 @@ onMounted(() => {
                 <div class="col-md-12">
                 <p>{{ article.body }}</p>
                 </div>
+                <ArticleTagList :tags="article.tagList" />
             </div>
 
             <hr />
