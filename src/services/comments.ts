@@ -22,9 +22,9 @@ export interface UseCommentReturnType {
   lastError: Ref<string[]>
   commentsList: Ref<Comment[]>
   comment: Ref<Comment>
-  getComments: (slug: string) => void
-  addComment: (text: NewComment, slug: string, token: string) => void
-  deleteComment: (slug: string, id: number, token: string) => void
+  getComments: (slug: string) => Promise<void>
+  addComment: (text: NewComment, slug: string, token: string) => Promise<void>
+  deleteComment: (slug: string, id: number, token: string) => Promise<void>
 }
 
 export function emptyComment(): Comment {
@@ -43,7 +43,7 @@ export function useComment(): UseCommentReturnType {
   const commentsList = ref<Comment[]>([])
   const comment = ref<Comment>(emptyComment())
 
-  async function getComments(slug: string) {
+  async function getComments(slug: string): Promise<void> {
     lastError.value = []
     isLoading.value = true
     try {
@@ -56,7 +56,7 @@ export function useComment(): UseCommentReturnType {
     isLoading.value = false
   }
 
-  async function addComment(text: NewComment, slug: string, token: string) {
+  async function addComment(text: NewComment, slug: string, token: string): Promise<void> {
     lastError.value = []
     isLoading.value = true
     try {
@@ -79,7 +79,7 @@ export function useComment(): UseCommentReturnType {
     isLoading.value = false
   }
 
-  async function deleteComment(slug: string, id: number, token: string) {
+  async function deleteComment(slug: string, id: number, token: string): Promise<void> {
     lastError.value = []
     isLoading.value = true
     try {
