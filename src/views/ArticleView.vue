@@ -16,6 +16,7 @@ const comment = ref<string>("")
 const {article, getArticle, isLoading} = useArticle()
 const { 
   isLoading: commentIsLoading,
+  lastError,
   commentsList, 
   getComments, 
   addComment, 
@@ -41,8 +42,12 @@ async function deleteArticleComment(id: number): Promise<void> {
 }
 
 async function postComment(text: string): Promise<void> {
-  await addComment({body: text}, slug, store.user.token)  
-  await getComments(slug, store.user.token)
+  lastError.value = [];
+  await addComment({body: text}, slug, store.user.token) 
+
+  if (!lastError.value.length) {
+    await getComments(slug, store.user.token)
+  }
 }
 
 </script>
@@ -71,6 +76,9 @@ async function postComment(text: string): Promise<void> {
 
             <div class="row">
                 <div class="col-xs-12 col-md-8 offset-md-2">
+                    <ul class="error-messages">
+                      <li v-for="erroMsg in lastError" :key="erroMsg">{{ erroMsg }}</li>
+                    </ul>
 
                     <form v-if="store.user.token" class="card comment-form">
                         <div class="card-block">
