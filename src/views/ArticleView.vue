@@ -2,14 +2,17 @@
 import { useRoute } from 'vue-router';
 import { useArticle, provideArticle } from '@/services/articles'
 import { provideProfile } from '@/services/profile';
+import useComment from '@/services/comments';
 import ArticleMeta from '@/components/ArticleMeta.vue';
 import { useAuthStore } from '@/stores/auth';
 import { onMounted, ref, watch } from 'vue';
 import ArticleTagList from '@/components/ArticleTagList.vue';
+import ArticleComment from '@/components/ArticleComment.vue';
 
 const route = useRoute()
 const store = useAuthStore()
 const {article, getArticle, isLoading} = useArticle()
+const { commentsList, getComments, deleteComment } = useComment()
 
 provideArticle(article)
 
@@ -22,7 +25,13 @@ onMounted(() => {
   })
 
   getArticle(<string>route.params['slug'], store.user.token)
+  getComments(<string>route.params['slug'])
 })
+
+function deleteArticleComment(id: number): void {
+  commentsList.value = commentsList.value.filter((comment) => comment.id !== id)
+  deleteComment(<string>route.params['slug'], id, store.user.token)
+}
 
 </script>
 <template>
@@ -60,41 +69,14 @@ onMounted(() => {
                         </div>
                     </form>
 
-                    <div class="card">
-                        <div class="card-block">
-                            <p class="card-text">
-                                With supporting text below as a natural lead-in to additional content.
-                            </p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="" class="comment-author">
-                                <img src="http://i.imgur.com/Qr71crq.jpg" class="comment-author-img" />
-                            </a>
-                            &nbsp;
-                            <a href="" class="comment-author">Jacob Schmidt</a>
-                            <span class="date-posted">Dec 29th</span>
-                        </div>
-                    </div>
+                    <ArticleComment 
+                      v-for="comment in commentsList" 
+                      :comment="comment" 
+                      :key="comment.id" 
+                      :user="store.user"
 
-                    <div class="card">
-                        <div class="card-block">
-                            <p class="card-text">
-                                With supporting text below as a natural lead-in to additional content.
-                            </p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="" class="comment-author">
-                                <img src="http://i.imgur.com/Qr71crq.jpg" class="comment-author-img" />
-                            </a>
-                            &nbsp;
-                            <a href="" class="comment-author">Jacob Schmidt</a>
-                            <span class="date-posted">Dec 29th</span>
-                            <span class="mod-options">
-                                <i class="ion-edit"></i>
-                                <i class="ion-trash-a"></i>
-                            </span>
-                        </div>
-                    </div>
+                      @delete="deleteArticleComment"
+                    />
                 </div>
             </div>
         </div>
