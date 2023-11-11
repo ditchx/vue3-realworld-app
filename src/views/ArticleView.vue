@@ -10,6 +10,7 @@ import ArticleTagList from '@/components/ArticleTagList.vue';
 import ArticleComment from '@/components/ArticleComment.vue';
 
 const route = useRoute()
+const slug = <string>route.params['slug']
 const store = useAuthStore()
 const comment = ref<string>("")
 const {article, getArticle, isLoading} = useArticle()
@@ -30,18 +31,18 @@ onMounted(async () => {
     profile.value = newValue.author
   })
 
-  await getArticle(<string>route.params['slug'], store.user.token)
-  await getComments(<string>route.params['slug'], store.user.token)
+  await getArticle(slug, store.user.token)
+  await getComments(slug, store.user.token)
 })
 
 async function deleteArticleComment(id: number): Promise<void> {
   commentsList.value = commentsList.value.filter((comment) => comment.id !== id)
-  await deleteComment(<string>route.params['slug'], id, store.user.token)
+  await deleteComment(slug, id, store.user.token)
 }
 
 async function postComment(text: string): Promise<void> {
-  await addComment({body: text}, <string>route.params['slug'], store.user.token)  
-  await getComments(<string>route.params['slug'], store.user.token)
+  await addComment({body: text}, slug, store.user.token)  
+  await getComments(slug, store.user.token)
 }
 
 </script>
