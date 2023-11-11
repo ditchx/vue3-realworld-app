@@ -71,7 +71,8 @@ async function postComment(text: string): Promise<void> {
 
             <div class="row">
                 <div class="col-xs-12 col-md-8 offset-md-2">
-                    <form  class="card comment-form">
+
+                    <form v-if="store.user.token" class="card comment-form">
                         <div class="card-block">
                             <textarea v-model="comment" class="form-control" placeholder="Write a comment..." rows="3"></textarea>
                         </div>
@@ -80,6 +81,12 @@ async function postComment(text: string): Promise<void> {
                             <button  :disabled="commentIsLoading" @click.prevent="postComment(comment)"  class="btn btn-sm btn-primary">Post Comment</button>
                         </div>
                     </form>
+                    <p v-else>
+                      <router-link :to="{name: 'login'}">Sign in</router-link>
+                      or 
+                      <router-link :to="{name: 'register'}">sign up</router-link>
+                      to add comments on this article.
+                    </p>
 
                     <ArticleComment 
                       v-for="comment in commentsList" 
