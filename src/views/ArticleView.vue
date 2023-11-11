@@ -37,8 +37,12 @@ onMounted(async () => {
 })
 
 async function deleteArticleComment(id: number): Promise<void> {
-  commentsList.value = commentsList.value.filter((comment) => comment.id !== id)
-  await deleteComment(slug, id, store.user.token)
+
+  if (confirm('Are you sure you want to delete this comment?')) {
+    commentsList.value = commentsList.value.filter((comment) => comment.id !== id)
+    await deleteComment(slug, id, store.user.token)
+  }
+
 }
 
 async function postComment(text: string): Promise<void> {
