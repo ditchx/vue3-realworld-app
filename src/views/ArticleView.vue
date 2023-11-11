@@ -15,7 +15,6 @@ const comment = ref<string>("")
 const {article, getArticle, isLoading} = useArticle()
 const { 
   isLoading: commentIsLoading,
-  comment: newComment,
   commentsList, 
   getComments, 
   addComment, 
@@ -32,7 +31,7 @@ onMounted(async () => {
   })
 
   await getArticle(<string>route.params['slug'], store.user.token)
-  await getComments(<string>route.params['slug'])
+  await getComments(<string>route.params['slug'], store.user.token)
 })
 
 async function deleteArticleComment(id: number): Promise<void> {
@@ -42,7 +41,7 @@ async function deleteArticleComment(id: number): Promise<void> {
 
 async function postComment(text: string): Promise<void> {
   await addComment({body: text}, <string>route.params['slug'], store.user.token)  
-  commentsList.value.push(newComment.value)
+  await getComments(<string>route.params['slug'], store.user.token)
 }
 
 </script>
