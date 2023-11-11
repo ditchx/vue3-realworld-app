@@ -46,6 +46,7 @@ async function postComment(text: string): Promise<void> {
   await addComment({body: text}, slug, store.user.token) 
 
   if (!lastError.value.length) {
+    comment.value = ''
     await getComments(slug, store.user.token)
   }
 }
