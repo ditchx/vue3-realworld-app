@@ -11,26 +11,38 @@ import ArticleComment from '@/components/ArticleComment.vue';
 
 const route = useRoute()
 const store = useAuthStore()
+const comment = ref<string>("")
 const {article, getArticle, isLoading} = useArticle()
-const { commentsList, getComments, deleteComment } = useComment()
+const { 
+  isLoading: commentIsLoading,
+  comment: newComment,
+  commentsList, 
+  getComments, 
+  addComment, 
+  deleteComment } = useComment()
 
 provideArticle(article)
 
 const profile = ref(article.value.author)
 provideProfile(profile)
 
-onMounted(() => {
+onMounted(async () => {
   watch(article, (newValue) => {
     profile.value = newValue.author
   })
 
-  getArticle(<string>route.params['slug'], store.user.token)
-  getComments(<string>route.params['slug'])
+  await getArticle(<string>route.params['slug'], store.user.token)
+  await getComments(<string>route.params['slug'])
 })
 
-function deleteArticleComment(id: number): void {
+async function deleteArticleComment(id: number): Promise<void> {
   commentsList.value = commentsList.value.filter((comment) => comment.id !== id)
-  deleteComment(<string>route.params['slug'], id, store.user.token)
+  await deleteComment(<string>route.params['slug'], id, store.user.token)
+}
+
+async function postComment(text: string): Promise<void> {
+  await addComment({body: text}, <string>route.params['slug'], store.user.token)  
+  commentsList.value.push(newComment.value)
 }
 
 </script>
@@ -59,13 +71,13 @@ function deleteArticleComment(id: number): void {
 
             <div class="row">
                 <div class="col-xs-12 col-md-8 offset-md-2">
-                    <form class="card comment-form">
+                    <form  class="card comment-form">
                         <div class="card-block">
-                            <textarea class="form-control" placeholder="Write a comment..." rows="3"></textarea>
+                            <textarea v-model="comment" class="form-control" placeholder="Write a comment..." rows="3"></textarea>
                         </div>
                         <div class="card-footer">
-                            <img src="http://i.imgur.com/Qr71crq.jpg" class="comment-author-img" />
-                            <button class="btn btn-sm btn-primary">Post Comment</button>
+                            <img :src="store.user.image" class="comment-author-img" />
+                            <button  :disabled="commentIsLoading" @click.prevent="postComment(comment)"  class="btn btn-sm btn-primary">Post Comment</button>
                         </div>
                     </form>
 
