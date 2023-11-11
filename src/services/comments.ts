@@ -18,6 +18,7 @@ export interface NewComment {
 }
 
 export interface UseCommentReturnType {
+  isLoading: Ref<boolean>
   lastError: Ref<string[]>
   commentsList: Ref<Comment[]>
   comment: Ref<Comment>
@@ -37,12 +38,14 @@ export function emptyComment(): Comment {
 }
 
 export function useComment(): UseCommentReturnType {
+  const isLoading = ref(false)
   const lastError = ref<string[]>([])
   const commentsList = ref<Comment[]>([])
   const comment = ref<Comment>(emptyComment())
 
   async function getComments(slug: string) {
     lastError.value = []
+    isLoading.value = true
     try {
       const response = await axios.get(serviceURL + '/articles/' + slug + '/comments')
       commentsList.value = response.data.comments
@@ -50,10 +53,12 @@ export function useComment(): UseCommentReturnType {
       commentsList.value = []
       lastError.value = getErrors(error)
     }
+    isLoading.value = false
   }
 
   async function addComment(text: NewComment, slug: string, token: string) {
     lastError.value = []
+    isLoading.value = true
     try {
       const response = await axios.post(
         serviceURL + '/articles/' + slug + '/comments',
@@ -71,10 +76,12 @@ export function useComment(): UseCommentReturnType {
       comment.value = emptyComment()
       lastError.value = getErrors(error)
     }
+    isLoading.value = false
   }
 
   async function deleteComment(slug: string, id: number, token: string) {
     lastError.value = []
+    isLoading.value = true
     try {
       await axios.delete(serviceURL + '/articles/' + slug + '/comments/' + id, {
         headers: {
@@ -85,9 +92,11 @@ export function useComment(): UseCommentReturnType {
       comment.value = emptyComment()
       lastError.value = getErrors(error)
     }
+    isLoading.value = false
   }
 
   return {
+    isLoading,
     lastError,
     commentsList,
     comment,
