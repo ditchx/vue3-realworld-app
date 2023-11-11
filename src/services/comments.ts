@@ -22,7 +22,7 @@ export interface UseCommentReturnType {
   lastError: Ref<string[]>
   commentsList: Ref<Comment[]>
   comment: Ref<Comment>
-  getComments: (slug: string) => Promise<void>
+  getComments: (slug: string, token?: string) => Promise<void>
   addComment: (text: NewComment, slug: string, token: string) => Promise<void>
   deleteComment: (slug: string, id: number, token: string) => Promise<void>
 }
@@ -43,11 +43,20 @@ export function useComment(): UseCommentReturnType {
   const commentsList = ref<Comment[]>([])
   const comment = ref<Comment>(emptyComment())
 
-  async function getComments(slug: string): Promise<void> {
+  async function getComments(slug: string, token?: string): Promise<void> {
     lastError.value = []
     isLoading.value = true
     try {
-      const response = await axios.get(serviceURL + '/articles/' + slug + '/comments')
+
+      const cfg: any = {}
+
+      if (token) {
+        cfg.headers = {
+          Authorization: 'Token ' + token
+        }
+      }
+
+      const response = await axios.get(serviceURL + '/articles/' + slug + '/comments', cfg)
       commentsList.value = response.data.comments
     } catch (error) {
       commentsList.value = []
