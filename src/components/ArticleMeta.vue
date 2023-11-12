@@ -1,5 +1,5 @@
 <script lang="ts" setup="">
-import { injectArticle } from '@/services/articles';
+import useArticle, { injectArticle } from '@/services/articles';
 import FavoriteButton from './FavoriteButton.vue';
 import { useDateFormat } from '@vueuse/core';
 import FollowUser from './FollowUser.vue';
@@ -9,9 +9,18 @@ const { article } = injectArticle()
 
 const store = useAuthStore()
 const isArticleOwner = store.user.username === article.value.author.username
+const { deleteArticle } = useArticle()
 
 function redirectToEdit() {
   router.push({ name: 'edit_article', params: { slug: article.value.slug }})
+}
+
+async function removeArticle(): Promise<void> {
+
+  if (confirm('Are you sure you want to delete this article?')) {
+    await deleteArticle(article.value.slug, store.user.token)
+    router.push({name: 'home'}) 
+  }
 }
 
 </script>
@@ -32,7 +41,7 @@ function redirectToEdit() {
       <i class="ion-edit"></i> Edit Article
     </button>
     &nbsp;
-    <button v-if="isArticleOwner" class="btn btn-sm btn-outline-danger">
+    <button @click.prevent="removeArticle" v-if="isArticleOwner" class="btn btn-sm btn-outline-danger">
       <i class="ion-trash-a"></i> Delete Article
     </button>
   </div>
