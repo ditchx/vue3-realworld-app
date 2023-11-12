@@ -26,6 +26,11 @@ const router = createRouter({
       component: () => import('../views/EditorView.vue')
     },
     {
+      path: '/editor/:slug',
+      name: 'edit_article',
+      component: () => import('../views/EditorView.vue')
+    },
+    {
       path: '/settings',
       name: 'settings',
       component: () => import('../views/SettingsView.vue')
@@ -46,7 +51,7 @@ const router = createRouter({
 router.beforeEach((to) => {
   const store = useAuthStore()
   const guestPaths = ['login', 'register']
-  const authPaths = ['settings', 'create_article']
+  const authPaths = ['settings', 'create_article', 'edit_article']
 
   if (store.isLoggedIn && guestPaths.includes(<string>to.name)) {
     return '/'
