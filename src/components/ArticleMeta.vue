@@ -4,11 +4,15 @@ import FavoriteButton from './FavoriteButton.vue';
 import { useDateFormat } from '@vueuse/core';
 import FollowUser from './FollowUser.vue';
 import { useAuthStore } from '@/stores/auth';
+import router from '@/router';
 const { article } = injectArticle()
 
 const store = useAuthStore()
 const isArticleOwner = store.user.username === article.value.author.username
 
+function redirectToEdit() {
+  router.push({ name: 'edit_article', params: { slug: article.value.slug }})
+}
 
 </script>
 <template>
@@ -24,7 +28,7 @@ const isArticleOwner = store.user.username === article.value.author.username
         <i class="ion-heart"></i>
       &nbsp; {{ article.favorited ? 'Unfavorite' : 'Favorite' }} Article <span class="counter">({{ article.favoritesCount }})</span>
     </favorite-button>
-    <button v-if="isArticleOwner" class="btn btn-sm btn-outline-secondary">
+    <button @click.prevent="redirectToEdit" v-if="isArticleOwner" class="btn btn-sm btn-outline-secondary">
       <i class="ion-edit"></i> Edit Article
     </button>
     &nbsp;
