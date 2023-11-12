@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useArticle } from '@/services/articles'
 import router from '@/router'
+import { useRoute } from 'vue-router';
 
 const title = ref('')
 const description = ref('')
@@ -12,17 +13,50 @@ const tagList = ref<Set<string>>(new Set<string>())
 
 const store = useAuthStore()
 
-const { article, isLoading, lastError, addArticle } = useArticle()
+const { 
+  article, 
+  isLoading, 
+  lastError, 
+  addArticle, 
+  getArticle, 
+  updateArticle } = useArticle()
 
 const formDisabled = computed(() => isLoading.value)
 
+const route = useRoute()
+
+const slug = <string>route.params['slug']
+
+onMounted(async () => {
+  if (slug) {
+    await getArticle(slug, store.user.token)
+
+    title.value = article.value.title
+    description.value = article.value.description
+    body.value = article.value.body
+    tagList.value = new Set<string>(article.value.tagList)
+  }
+})
+
+
 async function publishArticle(): Promise<void> {
-  await addArticle({
-    title: title.value,
-    description: description.value,
-    body: body.value,
-    tagList: Array.from(tagList.value)
-  }, store.user.token) 
+
+  if (slug) {
+    await updateArticle({
+      title: title.value,
+      description: description.value,
+      body: body.value,
+      tagList: Array.from(tagList.value)
+    }, slug, store.user.token) 
+
+  } else {
+    await addArticle({
+      title: title.value,
+      description: description.value,
+      body: body.value,
+      tagList: Array.from(tagList.value)
+    }, store.user.token) 
+  }
   
   if (!lastError.value.length && article.value.slug) {
     router.push({name: 'article', params: { slug: article.value.slug }})
