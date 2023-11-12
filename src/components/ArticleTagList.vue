@@ -6,6 +6,6 @@ const props = defineProps<{
 </script>
 <template>
   <ul v-if="props.tags.length" class="tag-list">
-    <li v-for="tag in props.tags" class="tag-default tag-pill tag-outline">{{ tag }}</li>
+    <li :key="tag" v-for="tag in props.tags" class="tag-default tag-pill tag-outline">{{ tag }}</li>
   </ul>
 </template>

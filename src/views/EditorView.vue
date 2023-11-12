@@ -25,7 +25,7 @@ const formDisabled = computed(() => isLoading.value)
 
 const route = useRoute()
 
-const slug = <string>route.params['slug']
+const slug = route.params['slug'] as string
 
 onMounted(async () => {
   if (slug) {
@@ -81,7 +81,7 @@ function checkTag(event: Event) {
     return
   }
 
-  if (!/^[0-9a-zA-Z\-\_]*$/.test(tag.value)) {
+  if (!/^[0-9a-zA-Z\-_]*$/.test(tag.value)) {
     tag.value = tag.value.slice(0, -1)
   }
 }

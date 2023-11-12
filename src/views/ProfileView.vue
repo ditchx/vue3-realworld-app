@@ -12,7 +12,7 @@ import { provideProfile } from '@/services/profile';
 const route = useRoute()
 const router = useRouter()
 const store = useAuthStore()
-const username = <string>route.params.username
+const username = route.params.username as string
 const selfProfile = username === store.user.username
 const { profile, lastError, getProfile } = useProfile()
 const { articleList, isLoading, totalCount, listArticles } = useArticle()
@@ -21,7 +21,7 @@ const offset = computed(() => (page.value - 1) * limit.value)
 const feedType = ref("author")
 
 function loadProfile() {
-  getProfile(<string>route.params.username, store.user.token)
+  getProfile(route.params.username as string, store.user.token)
 }
 
 async function loadFeed(which: string) {

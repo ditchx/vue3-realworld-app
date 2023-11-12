@@ -10,7 +10,7 @@ import ArticleTagList from '@/components/ArticleTagList.vue';
 import ArticleComment from '@/components/ArticleComment.vue';
 
 const route = useRoute()
-const slug = <string>route.params['slug']
+const slug = route.params['slug'] as string
 const store = useAuthStore()
 const comment = ref<string>("")
 const {article, getArticle, isLoading} = useArticle()
