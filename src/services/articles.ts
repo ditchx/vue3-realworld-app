@@ -228,7 +228,7 @@ export function useArticle(): UseArticleReturnType {
     isLoading.value = true
     try {
       const response = await axios.put(
-        serviceURL + '/articles',
+        serviceURL + '/articles/' + slug ,
         {
           article: modArticle
         },
